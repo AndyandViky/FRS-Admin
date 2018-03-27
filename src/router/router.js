@@ -131,9 +131,9 @@ export const appRouter = [
         title: '信息管理',
         component: Main,
         children: [
-            { path: 'artical-publish', title: '文章发布', name: 'artical-publish', icon: 'compose', component: () => import('@/views/form/article-publish/article-publish.vue') },
-            { path: 'artical-list', title: '文章列表', name: 'artical-list', icon: 'document-text', component: () => import('@/views/form/article-publish/article-publish.vue') },
-            { path: 'artical-list', title: '小区通知', name: 'artical-list', icon: 'document-text', component: () => import('@/views/form/article-publish/article-publish.vue') },
+            { path: 'artical-publish', title: '文章发布', name: 'artical-publish', icon: 'compose', component: () => import('@/views/info-manage/article-publish.vue') },
+            { path: 'artical-list', title: '文章列表', name: 'artical-list', icon: 'document-text', component: () => import('@/views/info-manage/article-publish.vue') },
+            { path: 'artical-list', title: '小区通知', name: 'community-info', icon: 'document-text', component: () => import('@/views/info-manage/article-publish.vue') },
         ]
     },
     {

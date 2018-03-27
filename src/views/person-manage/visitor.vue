@@ -52,7 +52,7 @@ export default {
             alert(1);
         },
         handleActive(index) {
-            alert(1);
+            
         },
         handleDel (val, index) {
             this.$Message.success('删除了第' + (index + 1) + '行数据');

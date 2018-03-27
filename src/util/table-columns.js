@@ -6,6 +6,14 @@ const cameraRecordColums = function (tableData) {
             key: 'name'
         },
         {
+            title: '所属地区',
+            key: 'belong'
+        },
+        {
+            title: '人员类别',
+            key: 'type'
+        },
+        {
             title: '门禁类别',
             key: 'types',
             filters: [
@@ -229,16 +237,60 @@ const baseColums = function (self, tableData) {
         {
             title: '性别',
             align: 'center',
-            key: 'sex',
-            width: 80,
-            editable: true
+            key: 'gender',
+            width: 100,
+            filters: [
+                {
+                    label: '男',
+                    value: 1
+                },
+                {
+                    label: '女',
+                    value: 2
+                }
+            ],
+            filterMultiple: false,
+            filterMethod (value, row) {
+                if (value === 1) {
+                    return row.gender < 1;
+                } else if (value === 2) {
+                    return row.gender > 0;
+                }
+            },
+            render: (h, params) => {
+                const row = params.row;
+                const text = row.gender === 1 ? '女' : '男';
+                return h('span', text);
+            }
         },
         {
             title: '年龄',
             align: 'center',
+            sortable: true,
             key: 'age',
-            width: 80,
-            editable: true
+            width: 100,
+            filters: [
+                {
+                    label: '20岁以下',
+                    value: 1
+                },
+                {
+                    label: '20-30',
+                    value: 2
+                },
+                {
+                    label: '30岁以上',
+                    value: 3
+                }
+            ],
+            filterMultiple: false,
+            filterMethod (value, row) {
+                if (value === 1) {
+                    return row.age < 20;
+                } else if (value === 2) {
+                    return row.age >= 20 && row.age < 30;
+                } else return row.age >= 30;
+            }
         },
         {
             title: '邮箱',
@@ -259,6 +311,24 @@ const baseColums = function (self, tableData) {
             align: 'center',
             key: 'is_active',
             width: 200,
+            filters: [
+                {
+                    label: '已激活',
+                    value: 1
+                },
+                {
+                    label: '未激活',
+                    value: 2
+                }
+            ],
+            filterMultiple: false,
+            filterMethod (value, row) {
+                if (value === 1) {
+                    return row.is_active > 0;
+                } else if (value === 2) {
+                    return row.is_active < 1;
+                }
+            },
             render: (h, params) => {
                 const row = params.row;
                 const text = row.is_active === 1 ? '已激活' : '未激活';
@@ -272,6 +342,13 @@ const baseColums = function (self, tableData) {
                     },
                     on: {
                         'on-ok': () => {
+                            if (row.is_active === 0) {
+                                self.$Message.info('激活成功');
+                                row.is_active = 1;
+                            } else {
+                                self.$Message.info('取消激活成功');
+                                row.is_active = 0;
+                            }
                             self.handleActive(params.index);
                         }
                     }
@@ -372,6 +449,24 @@ const visitorColums = function (self, tableData) {
         key: 'deadline',
         width: 150,
         align: 'center',
+        filters: [
+            {
+                label: '已生效',
+                value: 1
+            },
+            {
+                label: '未生效',
+                value: 2
+            }
+        ],
+        filterMultiple: false,
+        filterMethod (value, row) {
+            if (value === 1) {
+                return row.deadline > Date.now();
+            } else if (value === 2) {
+                return row.deadline < Date.now();
+            }
+        },
         render: (h, params) => {
             const row = params.row;
             const color = row.deadline > Date.now() ? '#666' : 'red';
@@ -397,10 +492,127 @@ const visitorColums = function (self, tableData) {
     return base;
 };
 
+const notRegisterColums = function (self, tableData) {
+    return [
+        {
+            title: '地区',
+            key: 'name'
+        },
+        {
+            title: '性别',
+            align: 'center',
+            key: 'gender',
+            sortable: true,
+            render: (h, params) => {
+                const row = params.row;
+                const text = row.gender === 1 ? '女' : '男';
+                return h('span', text);
+            }
+        },
+        {
+            title: '年龄',
+            sortable: true,
+            key: 'age',
+            filters: [
+                {
+                    label: '20岁以下',
+                    value: 1
+                },
+                {
+                    label: '20-30',
+                    value: 2
+                },
+                {
+                    label: '30岁以上',
+                    value: 3
+                }
+            ],
+            filterMultiple: false,
+            filterMethod (value, row) {
+                if (value === 1) {
+                    return row.age < 20;
+                } else if (value === 2) {
+                    return row.age >= 20 && row.age < 30;
+                } else return row.age >= 30;
+            }
+        },
+        {
+            title: '门禁图',
+            key: 'image',
+            render: (h, params) => {
+                return h('Poptip', {
+                    props: {
+                        trigger: 'hover',
+                        placement: 'bottom'
+                    }
+                }, [
+                    h('img', {
+                        domProps: {
+                            src: tableData[params.index].image
+                        },
+                        style: {
+                            width: '32px',
+                            height: '24px'
+                        }
+                    }),
+                    h('div', {
+                        slot: 'content'
+                    }, [
+                        h('img', {
+                            style: {
+                                width: '320px',
+                                height: '240px'
+                            },
+                            domProps: {
+                                src: tableData[params.index].image
+                            }
+                        })
+                    ])
+                ]);
+            }
+        },
+        {
+            title: '人数',
+            sortable: true,
+            key: 'people',
+            filters: [
+                {
+                    label: '一人',
+                    value: 1
+                },
+                {
+                    label: '大于3人',
+                    value: 2
+                }
+            ],
+            filterMultiple: false,
+            filterMethod (value, row) {
+                if (value === 1) {
+                    return row.people < 2;
+                } else if (value === 2) {
+                    return row.people > 3;
+                }
+            },
+            render: (h, params) => {
+                return h('div', params.row.people + ' 人');
+            }
+        },
+        {
+            title: '记录时间',
+            sortable: true,
+            key: 'create',
+            render: (h, params) => {
+                return h('div', formatDate(tableData[params.index].create));
+            }
+        }
+    ];
+};
+
 export {
     cameraRecordColums,
     cameraColums,
     propertyColums,
     householdColums,
-    visitorColums
+    visitorColums,
+    notRegisterColums
 };

@@ -3,7 +3,7 @@ export const propertyData = [
     {
         area: '幸福花园小区',
         name: 'Aresn',
-        sex: '男',
+        gender: 1,
         age: 20,
         email: '1026530721@qq.com',
         phone: '17805850721',
@@ -13,7 +13,7 @@ export const propertyData = [
     {
         area: '幸福花园小区',
         name: 'Aresn',
-        sex: '男',
+        gender: 1,
         age: 20,
         email: '1026530721@qq.com',
         phone: '17805850721',
@@ -23,7 +23,7 @@ export const propertyData = [
     {
         area: '幸福花园小区',
         name: 'Aresn',
-        sex: '男',
+        gender: 1,
         age: 20,
         email: '1026530721@qq.com',
         phone: '17805850721',
@@ -33,7 +33,7 @@ export const propertyData = [
     {
         area: '幸福花园小区',
         name: 'Aresn',
-        sex: '男',
+        gender: 1,
         age: 20,
         email: '1026530721@qq.com',
         phone: '17805850721',
@@ -43,7 +43,7 @@ export const propertyData = [
     {
         area: '幸福花园小区',
         name: 'Aresn',
-        sex: '男',
+        gender: 1,
         age: 20,
         email: '1026530721@qq.com',
         phone: '17805850721',
@@ -53,7 +53,7 @@ export const propertyData = [
     {
         area: '幸福花园小区',
         name: 'Aresn',
-        sex: '男',
+        gender: 1,
         age: 20,
         email: '1026530721@qq.com',
         phone: '17805850721',
@@ -66,7 +66,7 @@ export const householdData = [
     {
         area: '幸福花园小区',
         name: 'Aresn',
-        sex: '男',
+        gender: 1,
         age: 20,
         email: '1026530721@qq.com',
         phone: '17805850721',
@@ -76,7 +76,7 @@ export const householdData = [
     {
         area: '幸福花园小区',
         name: 'Aresn',
-        sex: '男',
+        gender: 1,
         age: 20,
         email: '1026530721@qq.com',
         phone: '17805850721',
@@ -86,7 +86,7 @@ export const householdData = [
     {
         area: '幸福花园小区',
         name: 'Aresn',
-        sex: '男',
+        gender: 1,
         age: 20,
         email: '1026530721@qq.com',
         phone: '17805850721',
@@ -96,7 +96,7 @@ export const householdData = [
     {
         area: '幸福花园小区',
         name: 'Aresn',
-        sex: '男',
+        gender: 1,
         age: 20,
         email: '1026530721@qq.com',
         phone: '17805850721',
@@ -106,7 +106,7 @@ export const householdData = [
     {
         area: '幸福花园小区',
         name: 'Aresn',
-        sex: '男',
+        gender: 1,
         age: 20,
         email: '1026530721@qq.com',
         phone: '17805850721',
@@ -116,7 +116,7 @@ export const householdData = [
     {
         area: '幸福花园小区',
         name: 'Aresn',
-        sex: '男',
+        gender: 1,
         age: 20,
         email: '1026530721@qq.com',
         phone: '17805850721',
@@ -130,7 +130,7 @@ export const visitorData = [
         area: '幸福花园小区',
         belong: '15-301',
         name: 'Aresn',
-        sex: '男',
+        gender: 1,
         age: 20,
         email: '1026530721@qq.com',
         phone: '17805850721',
@@ -142,7 +142,7 @@ export const visitorData = [
         area: '幸福花园小区',
         belong: '15-301',
         name: 'Aresn',
-        sex: '男',
+        gender: 1,
         age: 20,
         email: '1026530721@qq.com',
         phone: '17805850721',
@@ -154,7 +154,7 @@ export const visitorData = [
         area: '幸福花园小区',
         belong: '15-301',
         name: 'Aresn',
-        sex: '男',
+        gender: 1,
         age: 20,
         email: '1026530721@qq.com',
         phone: '17805850721',

@@ -65,36 +65,12 @@ export default {
                 }
             ],
             cameraColums: [],
-            searchConName: '',
-            isSuperManage: false,
-            areaSelect: '',
-            dateFilter: '',
-            adress: [],
             cameraLoading: false,
             loadingText: '',
         };
     },
     created() {
         this.cameraColums = cameraColums(this);
-        if(this.$store.state.user.auth === 2) {
-            // 此处判断用户权限
-            this.isSuperManage = true;
-            // 获取地区数据
-            this.adress = [
-                {
-                    value: '1',
-                    label: '幸福花园小区1'
-                },
-                {
-                    value: '2',
-                    label: '幸福花园小区2'
-                },
-                {
-                    value: '3',
-                    label: '幸福花园小区3'
-                }
-            ]
-        }
     },
     methods: {
         handleCamera (cameraNum) {

@@ -5,50 +5,113 @@
 
 <template>
     <div>
-        <Row class="margin-top-10">
-            <Col span="100">
-                <Card>
-                    <search @searchCondition="getSearchData"></search>
-                    <p slot="title">
-                        <Icon type="android-remove"></Icon>
-                        物业人员数据
-                    </p>
-                    <div class="edittable-table-height-con">
-                        <can-edit-table refs="table2" v-model="editInlineData" :columns-list="editInlineColumns"></can-edit-table>
-                    </div>
-                </Card>
-            </Col>
+        <Row>
+            <Card>
+                <search @searchCondition="getSearchData"></search>
+                <Row>
+                    <Col span="18">
+                        <Table :data="tableData" :columns="notRegisterColums" stripe ref="table"></Table>
+                    </Col>
+                    <Col span="6" class="padding-left-20">
+                        <div class="margin-bottom-10">
+                            <span>输入文件名：</span>
+                            <Input v-model="imageName" icon="document" placeholder="请输入图片名" style="width: 190px"/>
+                        </div>
+                        <Button type="primary" @click="exportImage">导出表格为图片</Button>
+                        <div class="show-image margin-top-20">
+                            <img id="exportedImage" />
+                        </div>
+                    </Col>
+                    <Col span='6' class="padding-left-10">
+                        <div class="margin-top-10 margin-left-10">
+                            <span>输入文件名：</span>
+                            <Input v-model="excelFileName" icon="document" placeholder="请输入文件名" style="width: 190px" />
+                        </div>
+                        <div class="margin-left-10 margin-top-20">
+                            <a id="hrefToExportTable" style="postion: absolute;left: -10px;top: -10px;width: 0px;height: 0px;"></a>
+                            <Button type="primary" size="large" @click="exportExcel">下载表格数据</Button>
+                        </div>
+                    </Col>
+                </Row>
+            </Card>
         </Row>
     </div>
 </template>
 
 <script>
-import canEditTable from './components/canEditTable.vue';
-import tableData from './components/table_data.js';
+import html2canvas from 'html2canvas';
+import table2excel from '@/libs/table2excel.js';
+import { notRegisterColums } from '@/util/table-columns.js'
 import search from '../main-components/search.vue'
 export default {
-    name: 'editable-table',
+    name: 'table-to-image',
     components: {
-        canEditTable,
         search
     },
     data () {
         return {
-            editInlineColumns: [],
-            editInlineData: [],
+            tableData: this.mockTableData1(),
+            imageName: '',
+            excelFileName: '',
+            tableExcel: {},
+            notRegisterColums: [],
         };
     },
+    created() {
+        this.notRegisterColums = notRegisterColums(self, this.tableData)
+    },
     methods: {
-        getData () {
-            this.editInlineColumns = tableData.propertyData;
-            this.editInlineData = tableData.editInlineData;
+        mockTableData1 () {
+            let data = [];
+            for (let i = 0; i < 20; i++) {
+                data.push({
+                    name: '幸福花园小区',
+                    gender: Math.floor(Math.random() * 1),
+                    age: Math.floor(Math.random() * 50 + 1),
+                    image: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1522044096773&di=71390fc035a383de557dbc9d54adc0ef&imgtype=0&src=http%3A%2F%2Fimg.taopic.com%2Fuploads%2Fallimg%2F120727%2F201995-120HG1030762.jpg',
+                    people: Math.floor(Math.random() * 7 + 1),
+                    time: Math.floor(Math.random() * 7 + 1),
+                    create: new Date()
+                });
+            }
+            return data;
+        },
+        exportImage () {
+            let vm = this;
+            let table = this.$refs.table.$el;
+            /* 这部分代码用来解决生成的图片不清晰的问题 */
+            let tableWidth = table.offsetWidth;
+            let tableHeight = table.offsetHeight;
+            let canvas = document.createElement('canvas');
+            canvas.width = tableWidth * 2;
+            canvas.height = tableHeight * 2;
+            canvas.style.width = tableWidth + 'px';
+            canvas.style.height = tableHeight + 'px';
+            document.body.appendChild(canvas);
+            var context = canvas.getContext('2d');
+            context.scale(2, 2);
+            /* 这部分代码用来解决生成的图片不清晰的问题 */
+            html2canvas(table, {
+                // canvas: canvas,
+                onrendered (image) {
+                    var url = image.toDataURL();
+                    document.getElementById('exportedImage').src = url;
+                    let a = document.createElement('a');
+                    a.href = url;
+                    a.download = vm.imageName ? vm.imageName : '未命名';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    // document.body.removeChild(canvas);
+                }
+            });
+        },
+        exportExcel () {
+            table2excel.transform(this.$refs.tableExcel, 'hrefToExportTable', this.excelFileName);
         },
         getSearchData() {
             alert(1);
         }
-    },
-    created () {
-        this.getData();
     }
 };
 </script>
