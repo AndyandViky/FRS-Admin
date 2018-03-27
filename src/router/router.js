@@ -73,28 +73,28 @@ export const appRouter = [
         children: [
             {
                 path: 'property',
-                icon: 'compose',
+                icon: 'lock-combination',
                 name: 'property',
                 title: '物业人员管理',
                 component: () => import('@/views/person-manage/property.vue')
             },
             {
                 path: 'household',
-                icon: 'pound',
+                icon: 'person',
                 name: 'household',
                 title: '住户管理',
                 component: () => import('@/views/person-manage/household.vue')
             },
             {
                 path: 'visitor',
-                icon: 'crop',
+                icon: 'man',
                 name: 'visitor',
                 title: '访客管理',
                 component: () => import('@/views/person-manage/visitor.vue')
             },
             {
                 path: 'not-register',
-                icon: 'crop',
+                icon: 'xbox',
                 name: 'not-register',
                 title: '非注册人员记录',
                 component: () => import('@/views/person-manage/not-register.vue')
@@ -110,14 +110,14 @@ export const appRouter = [
         children: [
             {
                 path: 'camera',
-                icon: 'compose',
+                icon: 'aperture',
                 name: 'camera',
                 title: '摄像头管理',
                 component: () => import('@/views/system-manage/camera.vue')
             },
             {
                 path: 'record',
-                icon: 'compose',
+                icon: 'ribbon-a',
                 name: 'record',
                 title: '门禁记录',
                 component: () => import('@/views/system-manage/camera-record.vue')
@@ -128,11 +128,12 @@ export const appRouter = [
         path: '/article',
         icon: 'clipboard',
         name: 'article',
-        title: '文章管理',
+        title: '信息管理',
         component: Main,
         children: [
             { path: 'artical-publish', title: '文章发布', name: 'artical-publish', icon: 'compose', component: () => import('@/views/form/article-publish/article-publish.vue') },
-            { path: 'artical-list', title: '文章列表', name: 'artical-list', icon: 'compose', component: () => import('@/views/form/article-publish/article-publish.vue') },
+            { path: 'artical-list', title: '文章列表', name: 'artical-list', icon: 'document-text', component: () => import('@/views/form/article-publish/article-publish.vue') },
+            { path: 'artical-list', title: '小区通知', name: 'artical-list', icon: 'document-text', component: () => import('@/views/form/article-publish/article-publish.vue') },
         ]
     },
     {

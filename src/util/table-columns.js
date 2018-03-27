@@ -204,8 +204,203 @@ const cameraColums = function (self) {
         }
     ];
 };
+const baseColums = function (self, tableData) {
+    return [
+        {
+            title: '序号',
+            type: 'index',
+            width: 80,
+            align: 'center',
+            fixed: 'left'
+        },
+        {
+            title: '所属地',
+            key: 'area',
+            width: 150,
+            align: 'center'
+        },
+        {
+            title: '姓名',
+            align: 'center',
+            key: 'name',
+            width: 150,
+            editable: true
+        },
+        {
+            title: '性别',
+            align: 'center',
+            key: 'sex',
+            width: 80,
+            editable: true
+        },
+        {
+            title: '年龄',
+            align: 'center',
+            key: 'age',
+            width: 80,
+            editable: true
+        },
+        {
+            title: '邮箱',
+            align: 'center',
+            key: 'email',
+            width: 200,
+            editable: true
+        },
+        {
+            title: '手机号',
+            align: 'center',
+            key: 'phone',
+            width: 200,
+            editable: true
+        },
+        {
+            title: '是否激活',
+            align: 'center',
+            key: 'is_active',
+            width: 200,
+            render: (h, params) => {
+                const row = params.row;
+                const text = row.is_active === 1 ? '已激活' : '未激活';
+                const title = row.is_active === 1 ? '取消激活' : '激活';
+                return h('Poptip', {
+                    props: {
+                        confirm: true,
+                        title: title,
+                        transfer: true,
+                        placement: 'bottom'
+                    },
+                    on: {
+                        'on-ok': () => {
+                            self.handleActive(params.index);
+                        }
+                    }
+                }, [
+                    h('span', {
+                        domProps: {
+                            title: '点击切换激活状态'
+                        },
+                        style: {
+                            padding: '0 4px',
+                            cursor: 'pointer'
+                        }
+                    }, text)
+                ]);
+            }
+        },
+        {
+            title: '头像',
+            align: 'center',
+            key: 'avatar',
+            width: 200,
+            render: (h, params) => {
+                return h('Poptip', {
+                    props: {
+                        trigger: 'click',
+                        transfer: true,
+                        placement: 'bottom'
+                    }
+                }, [
+                    h('img', {
+                        domProps: {
+                            src: tableData[params.index].image,
+                            title: '点击更换头像'
+                        },
+                        style: {
+                            width: '32px',
+                            height: '24px',
+                            cursor: 'pointer'
+                        }
+                    }),
+                    h('Row', {
+                        slot: 'content',
+                        props: {
+                            type: 'flex',
+                            justify: 'center',
+                            align: 'middle',
+                            class: 'height-100'
+                        }
+                    }, [
+                        h('Upload', {
+                            props: {
+                                action: '//jsonplaceholder.typicode.com/posts/',
+                                'format': ['jpg', 'png', 'jpeg', 'gif', 'bmp', 'svg'],
+                                'on-format-error': () => {
+                                    self.$Message.warning('文件格式错误');
+                                }
+                            }
+                        }, [
+                            h('Button', {
+                                domProps: {
+                                    type: 'ghost',
+                                    icon: 'ios-cloud-upload-outline'
+                                }
+                            }, '上传图片')
+                        ])
+                    ])
+                ]);
+            }
+        },
+        {
+            fixed: 'right',
+            title: '操作',
+            align: 'center',
+            width: 190,
+            key: 'handle',
+            handle: ['edit', 'delete']
+        }
+    ];
+};
+const propertyColums = function (self, tableData) {
+    return baseColums(self, tableData);
+};
+
+const householdColums = function (self, tableData) {
+    return baseColums(self, tableData);
+};
+
+const visitorColums = function (self, tableData) {
+    const base = baseColums(self, tableData);
+    base.splice(2, 0, {
+        title: '户主地址',
+        key: 'belong',
+        width: 150,
+        align: 'center'
+    });
+    base.splice(-2, 0, {
+        title: '状态',
+        key: 'deadline',
+        width: 150,
+        align: 'center',
+        render: (h, params) => {
+            const row = params.row;
+            const color = row.deadline > Date.now() ? '#666' : 'red';
+            const text = row.deadline > Date.now() ? '生效' : '失效';
+            const title = row.deadline > Date.now() ? '' : '点击延期';
+            return h('span', {
+                domProps: {
+                    title: title
+                },
+                style: {
+                    padding: '0 4px',
+                    color: color,
+                    cursor: 'pointer'
+                },
+                on: {
+                    'click': () => {
+                        self.handleExtension(params.index);
+                    }
+                }
+            }, text);
+        }
+    });
+    return base;
+};
 
 export {
     cameraRecordColums,
-    cameraColums
+    cameraColums,
+    propertyColums,
+    householdColums,
+    visitorColums
 };

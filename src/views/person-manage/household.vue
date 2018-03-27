@@ -1,23 +1,27 @@
 <style lang="less">
     @import '../../styles/common.less';
-    @import './components/table.less';
+    @import '../../styles/table.less';
 </style>
 
 <template>
     <div>
-        <Row class="margin-top-10">
-            <Col span="100">
-                <Card>
-                    <search @searchCondition="getSearchData"></search>
-                    <p slot="title">
-                        <Icon type="android-remove"></Icon>
-                        物业人员数据
-                    </p>
-                    <div class="edittable-table-height-con">
-                        <can-edit-table refs="table2" v-model="editInlineData" :columns-list="editInlineColumns"></can-edit-table>
-                    </div>
-                </Card>
-            </Col>
+        <Row>
+            <Card>
+                <search @searchCondition="getSearchData"></search>
+                <Row>
+                    <Col span="100">
+                        <Card>
+                            <p slot="title">
+                                <Icon type="ios-keypad"></Icon>
+                                住户人员数据
+                            </p>
+                            <div>
+                                <can-edit-table refs="household" @on-delete="handleDel" @on-change="handleChange" v-model="householdData" :columns-list="householdColumns"></can-edit-table>
+                            </div>  
+                        </Card>
+                    </Col>
+                </Row>
+            </Card>
         </Row>
     </div>
 </template>
@@ -25,26 +29,36 @@
 <script>
 import canEditTable from './components/canEditTable.vue';
 import tableData from './components/table_data.js';
+import { householdColums } from '@/util/table-columns.js'
 import search from '../main-components/search.vue'
 export default {
-    name: 'editable-table',
+    name: 'property',
     components: {
         canEditTable,
         search
     },
     data () {
         return {
-            editInlineColumns: [],
-            editInlineData: [],
+            householdColumns: [],
+            householdData: [],
         };
     },
     methods: {
         getData () {
-            this.editInlineColumns = tableData.editInlineColumns;
-            this.editInlineData = tableData.editInlineData;
+            this.householdData = tableData.householdData;
+            this.householdColumns = householdColums(this, this.householdData);
         },
-        getSearchData() {
+        getSearchData(data) {
             alert(1);
+        },
+        handleActive(index) {
+            alert(1);
+        },
+        handleDel (val, index) {
+            this.$Message.success('删除了第' + (index + 1) + '行数据');
+        },
+        handleChange (val, index) {
+            this.$Message.success('修改了第' + (index + 1) + '行数据');
         }
     },
     created () {

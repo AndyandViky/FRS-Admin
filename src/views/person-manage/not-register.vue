@@ -1,6 +1,6 @@
 <style lang="less">
     @import '../../styles/common.less';
-    @import './components/table.less';
+    @import '../../styles/table.less';
 </style>
 
 <template>
@@ -40,7 +40,7 @@ export default {
     },
     methods: {
         getData () {
-            this.editInlineColumns = tableData.editInlineColumns;
+            this.editInlineColumns = tableData.propertyData;
             this.editInlineData = tableData.editInlineData;
         },
         getSearchData() {
