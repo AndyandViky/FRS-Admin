@@ -14,10 +14,13 @@
             <div>
                 <Button @click="setCurrentMesType('recyclebin')" size="large" long type="text"><transition name="mes-current-type-btn"><Icon v-show="currentMessageType === 'recyclebin'" type="checkmark"></Icon></transition><span class="mes-type-btn-text">回收站</span><Badge class="message-count-badge-outer" class-name="message-count-badge" :count="recyclebinCount"></Badge></Button>
             </div>
+            <div>
+                <Button @click="setCurrentMesType('create')" size="large" long type="text"><transition name="mes-current-type-btn"><Icon v-show="currentMessageType === 'create'" type="checkmark"></Icon></transition><span class="mes-type-btn-text">创建通知</span><Badge class="message-count-badge-outer" class-name="message-count-badge"></Badge></Button>
+            </div>
         </div>
         <div class="message-content-con">
             <transition name="view-message">
-                <div v-if="showMesTitleList" class="message-title-list-con">
+                <div v-if="showMesTitleList && !showCreate" class="message-title-list-con">
                     <Table ref="messageList" :columns="mesTitleColumns" :data="currentMesList" :no-data-text="noDataText"></Table>
                 </div>
             </transition>
@@ -31,6 +34,29 @@
                     <div class="message-content-body">
                         <p class="message-content">{{ mes.content }}</p>
                     </div>
+                </div>
+            </transition>
+            <transition name="view-message">
+                <div v-if="showCreate">
+                    <Form :model="formItem" :label-width="60" style="margin: 30px 40px 0 10px;">
+                        <FormItem label="户主">
+                            <Select v-model="formItem.houseId">
+                                <Option value="1">15-311</Option>
+                                <Option value="2">15-312</Option>
+                                <Option value="3">15-313</Option>
+                            </Select>
+                        </FormItem>
+                        <FormItem label="标题">
+                            <Input v-model="formItem.title" placeholder="请输入通知内容"></Input>
+                        </FormItem>
+                        <FormItem label="内容">
+                            <Input v-model="formItem.content" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入通知内容"></Input>
+                        </FormItem>
+                        <FormItem>
+                            <Button type="primary" @click="sendNotice">发送</Button>
+                            <Button type="ghost" @click="saveNotice" style="margin-left: 8px">保存为草稿</Button>
+                        </FormItem>
+                    </Form>
                 </div>
             </transition>
         </div>
@@ -80,12 +106,14 @@ export default {
             }, '还原');
         };
         return {
+            formItem: [],
             currentMesList: [],
             unsendMesList: [],
             hassendMesList: [],
             recyclebinList: [],
             currentMessageType: 'unsend',
             showMesTitleList: true,
+            showCreate: false,
             unsendCount: 0,
             hassendCount: 0,
             recyclebinCount: 0,
@@ -185,6 +213,7 @@ export default {
         setCurrentMesType (type) {
             if (this.currentMessageType !== type) {
                 this.showMesTitleList = true;
+                this.showCreate = false;
             }
             this.currentMessageType = type;
             if (type === 'hassend') {
@@ -193,6 +222,8 @@ export default {
             } else if (type === 'unsend') {
                 this.noDataText = '暂无未发送通知';
                 this.currentMesList = this.unsendMesList;
+            } else if (type === 'create') {
+                this.showCreate = true;
             } else {
                 this.noDataText = '回收站无通知';
                 this.currentMesList = this.recyclebinList;
@@ -209,6 +240,16 @@ export default {
                 default: mesContent = '这是您点击的《这是一条被删除的通知》的相关内容。'; break;
             }
             this.mes.content = mesContent;
+        },
+        sendNotice() {
+            this.currentMessageType = 'hassend';
+            this.showCreate = false;
+            this.$Message.info("发送成功");
+        },
+        saveNotice() {
+            this.currentMessageType = 'unsend';
+            this.showCreate = false;
+            this.$Message.info("保存成功");
         }
     },
     mounted () {

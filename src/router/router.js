@@ -56,6 +56,7 @@ export const otherRouter = {
     redirect: '/home',
     component: Main,
     children: [
+        { path: 'face/:id', title: '人脸详情', name: 'face-detail', component: () => import('@/views/person-manage/face-detail.vue') },
         { path: 'article/:id', title: '文章详情', name: 'artical-detail', component: () => import('@/views/info-manage/article-detail.vue') },
         { path: 'bug/operate/:id', title: '故障详情', name: 'bug-detail', component: () => import('@/views/bug-manage/bug-detail.vue') },
         { path: 'home', title: {i18n: 'home'}, name: 'home_index', component: () => import('@/views/home/home.vue') },
@@ -133,7 +134,6 @@ export const appRouter = [
         title: '信息管理',
         component: Main,
         children: [
-            { path: 'face-image', title: '人脸库', name: 'face-image', icon: 'person', component: () => import('@/views/info-manage/article-publish.vue') },
             { path: 'artical-publish', title: '文章发布', name: 'artical-publish', icon: 'compose', component: () => import('@/views/info-manage/article-publish.vue') },
             { path: 'artical-list', title: '文章列表', name: 'artical-list', icon: 'document-text', component: () => import('@/views/info-manage/article-list.vue') },
             { path: 'notice', title: '通知管理', name: 'community-notice', icon: 'chatboxes', component: () => import('@/views/info-manage/community-notice.vue') },

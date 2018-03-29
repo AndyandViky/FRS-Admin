@@ -423,6 +423,26 @@ const baseColums = function (self, tableData) {
             }
         },
         {
+            title: '人脸图像',
+            align: 'center',
+            width: 200,
+            render: (h, params) => {
+                return h('span', {
+                    domProps: {
+                        title: '查看人脸图像'
+                    },
+                    style: {
+                        cursor: 'pointer'
+                    },
+                    on: {
+                        'click': () => {
+                            self.getFaceModel(params.index);
+                        }
+                    }
+                }, '查看人脸图像');
+            }
+        },
+        {
             fixed: 'right',
             title: '操作',
             align: 'center',

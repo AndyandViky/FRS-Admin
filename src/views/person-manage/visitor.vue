@@ -59,6 +59,9 @@ export default {
         },
         handleChange (val, index) {
             this.$Message.success('修改了第' + (index + 1) + '行数据');
+        },
+        getFaceModel(index) {
+            this.$router.push({path: '/face/'+this.visitorData[index].id})
         }
     },
     created () {
