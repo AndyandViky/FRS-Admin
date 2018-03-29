@@ -11,6 +11,7 @@ const cameraRecordColums = function (tableData) {
         },
         {
             title: '人员类别',
+            align: 'center',
             key: 'type'
         },
         {
@@ -37,7 +38,7 @@ const cameraRecordColums = function (tableData) {
             render: (h, params) => {
                 const row = params.row;
                 const color = row.status === 1 ? 'green' : 'red';
-                const text = row.status === 1 ? '识别进入' : 'app进入';
+                const text = row.status === 1 ? 'camera' : 'app';
 
                 return h('Tag', {
                     props: {
@@ -89,6 +90,8 @@ const cameraRecordColums = function (tableData) {
             title: '进入人数',
             sortable: true,
             key: 'people',
+            align: 'center',
+            width: 150,
             filters: [
                 {
                     label: '一人进入',
@@ -269,6 +272,7 @@ const baseColums = function (self, tableData) {
             sortable: true,
             key: 'age',
             width: 100,
+            editable: true,
             filters: [
                 {
                     label: '20岁以下',
@@ -608,11 +612,99 @@ const notRegisterColums = function (self, tableData) {
     ];
 };
 
+const bugColums = function (self, tableData) {
+    return [
+        {
+            title: '序号',
+            type: 'index',
+            width: 80,
+            align: 'center',
+            fixed: 'left'
+        },
+        {
+            title: '所属地',
+            key: 'area',
+            width: 150,
+            align: 'center'
+        },
+        {
+            title: '所属地区',
+            align: 'center',
+            key: 'belong',
+            width: 150
+        },
+        {
+            title: '故障名',
+            align: 'center',
+            key: 'name',
+            width: 200
+        },
+        {
+            title: '状态',
+            align: 'center',
+            sortable: true,
+            key: 'status',
+            width: 150,
+            render: (h, params) => {
+                const row = params.row;
+                const color = row.status === 1 ? 'green' : 'red';
+                const text = row.status === 1 ? '已处理' : '未处理';
+
+                return h('Tag', {
+                    props: {
+                        type: 'dot',
+                        color: color
+                    },
+                    style: {
+                        padding: '0 4px'
+                    }
+                }, text);
+            }
+        },
+        {
+            title: '申请时间',
+            align: 'center',
+            sortable: true,
+            key: 'created_at',
+            render: (h, params) => {
+                return h('div', formatDate(tableData[params.index].created_at));
+            }
+        },
+        {
+            title: '操作',
+            key: 'action',
+            width: 150,
+            align: 'center',
+            render: (h, params) => {
+                const row = params.row;
+                const type = row.status === 1 ? 'error' : 'primary';
+                const text = row.status === 1 ? '删除' : '处理';
+                return h('div', [
+                    h('Button', {
+                        props: {
+                            type
+                        },
+                        style: {
+                            marginRight: '5px'
+                        },
+                        on: {
+                            click: () => {
+                                self.handle(tableData, params.index);
+                            }
+                        }
+                    }, text)
+                ]);
+            }
+        }
+    ];
+};
+
 export {
     cameraRecordColums,
     cameraColums,
     propertyColums,
     householdColums,
     visitorColums,
-    notRegisterColums
+    notRegisterColums,
+    bugColums
 };

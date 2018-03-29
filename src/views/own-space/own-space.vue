@@ -39,11 +39,25 @@
                             </div>
                         </div>
                     </FormItem>
-                    <FormItem label="公司：">
-                        <span>{{ userForm.company }}</span>
+                    <FormItem label="性别：" prop="gender">
+                        <div style="display:inline-block;width:300px;">
+                            <Input v-model="userForm.gender" ></Input>
+                        </div>
                     </FormItem>
-                    <FormItem label="部门：">
-                        <span>{{ userForm.department }}</span>
+                    <FormItem label="年龄：" prop="age">
+                        <div style="display:inline-block;width:300px;">
+                            <Input v-model="userForm.age" ></Input>
+                        </div>
+                    </FormItem>
+                    <FormItem label="邮箱：" prop="email">
+                        <div style="display:inline-block;width:300px;">
+                            <Input v-model="userForm.email" ></Input>
+                        </div>
+                    </FormItem>
+                    <FormItem label="头像：">
+                        <div style="display:inline-block;width:300px;">
+                            <Input v-model="userForm.email" ></Input>
+                        </div>
                     </FormItem>
                     <FormItem label="登录密码：">
                         <Button type="text" size="small" @click="showEditPassword">修改密码</Button>
@@ -99,8 +113,9 @@ export default {
             userForm: {
                 name: '',
                 cellphone: '',
-                company: '',
-                department: ''
+                gender: '',
+                age: '',
+                email: ''
             },
             uid: '', // 登录用户的userId
             securityCode: '', // 验证码
@@ -121,6 +136,15 @@ export default {
                 cellphone: [
                     { required: true, message: '请输入手机号码' },
                     { validator: validePhone }
+                ],
+                gender: [
+                    { required: true, message: '请输入性别', trigger: 'blur' }
+                ],
+                age: [
+                    { required: true, message: '请输入年龄', trigger: 'blur' }
+                ],
+                email: [
+                    { required: true, message: '请输入邮箱', trigger: 'blur' }
                 ]
             },
             editPasswordForm: {
@@ -219,8 +243,9 @@ export default {
             this.userForm.name = 'Lison';
             this.userForm.cellphone = '17712345678';
             this.initPhone = '17712345678';
-            this.userForm.company = 'TalkingData';
-            this.userForm.department = '可视化部门';
+            this.userForm.gender = '女';
+            this.userForm.age = 20;
+            this.userForm.email = '1026530721@qq.com';
         },
         cancelInputCodeBox () {
             this.inputCodeVisible = false;

@@ -259,81 +259,23 @@ export default {
         ];
         this.classificationList = [
             {
-                title: 'Vue实例',
+                title: '失误招领',
                 expand: true,
-                children: [
-                    {
-                        title: '数据与方法',
-                        expand: true
-                    },
-                    {
-                        title: '生命周期',
-                        expand: true
-                    }
-                ]
             },
             {
-                title: 'Class与Style绑定',
-                expand: true,
-                children: [
-                    {
-                        title: '绑定HTML class',
-                        expand: true,
-                        children: [
-                            {
-                                title: '对象语法',
-                                expand: true
-                            },
-                            {
-                                title: '数组语法',
-                                expand: true
-                            },
-                            {
-                                title: '用在组件上',
-                                expand: true
-                            }
-                        ]
-                    },
-                    {
-                        title: '生命周期',
-                        expand: true
-                    }
-                ]
+                title: '小区活动',
+                expand: true
             },
             {
-                title: '模板语法',
-                expand: true,
-                children: [
-                    {
-                        title: '插值',
-                        expand: true
-                    },
-                    {
-                        title: '指令',
-                        expand: true
-                    },
-                    {
-                        title: '缩写',
-                        expand: true
-                    }
-                ]
-            }
+                title: '普通文章',
+            },
         ];
         this.offenUsedClass = [
             {
-                title: 'vue实例'
+                title: '普通文章'
             },
             {
-                title: '生命周期'
-            },
-            {
-                title: '模板语法'
-            },
-            {
-                title: '插值'
-            },
-            {
-                title: '缩写'
+                title: '小区活动'
             }
         ];
         tinymce.init({

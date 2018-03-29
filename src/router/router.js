@@ -40,7 +40,7 @@ export const page500 = {
 export const preview = {
     path: '/preview',
     name: 'preview',
-    component: () => import('@/views/form/article-publish/preview.vue')
+    component: () => import('@/views/info-manage/preview.vue')
 };
 
 export const locking = {
@@ -56,6 +56,8 @@ export const otherRouter = {
     redirect: '/home',
     component: Main,
     children: [
+        { path: 'article/:id', title: '文章详情', name: 'artical-detail', component: () => import('@/views/info-manage/article-detail.vue') },
+        { path: 'bug/operate/:id', title: '故障详情', name: 'bug-detail', component: () => import('@/views/bug-manage/bug-detail.vue') },
         { path: 'home', title: {i18n: 'home'}, name: 'home_index', component: () => import('@/views/home/home.vue') },
         { path: 'ownspace', title: '个人中心', name: 'ownspace_index', component: () => import('@/views/own-space/own-space.vue') },
         { path: 'message', title: '消息中心', name: 'message_index', component: () => import('@/views/message/message.vue') }
@@ -125,15 +127,16 @@ export const appRouter = [
         ]
     },
     {
-        path: '/article',
+        path: '/info',
         icon: 'clipboard',
         name: 'article',
         title: '信息管理',
         component: Main,
         children: [
+            { path: 'face-image', title: '人脸库', name: 'face-image', icon: 'person', component: () => import('@/views/info-manage/article-publish.vue') },
             { path: 'artical-publish', title: '文章发布', name: 'artical-publish', icon: 'compose', component: () => import('@/views/info-manage/article-publish.vue') },
-            { path: 'artical-list', title: '文章列表', name: 'artical-list', icon: 'document-text', component: () => import('@/views/info-manage/article-publish.vue') },
-            { path: 'artical-list', title: '小区通知', name: 'community-info', icon: 'document-text', component: () => import('@/views/info-manage/article-publish.vue') },
+            { path: 'artical-list', title: '文章列表', name: 'artical-list', icon: 'document-text', component: () => import('@/views/info-manage/article-list.vue') },
+            { path: 'notice', title: '通知管理', name: 'community-notice', icon: 'chatboxes', component: () => import('@/views/info-manage/community-notice.vue') },
         ]
     },
     {
@@ -144,11 +147,11 @@ export const appRouter = [
         component: Main,
         children: [
             {
-                path: 'index',
-                icon: 'compose',
-                name: 'bug_index',
+                path: 'operate',
+                icon: 'bug',
+                name: 'bug_operate',
                 title: '故障处理',
-                component: () => import('@/views/my-components/text-editor/text-editor.vue')
+                component: () => import('@/views/bug-manage/bug-operate.vue')
             }
         ]
     },
