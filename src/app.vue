@@ -12,7 +12,9 @@
             };
         },
         mounted () {
-
+            const auth = this.$store.state.user.auth;
+            Cookies.set('access', auth);
+            this.$store.commit('updateMenulist');
         },
         beforeDestroy () {
 

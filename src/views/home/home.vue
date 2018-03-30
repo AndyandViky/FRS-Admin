@@ -27,11 +27,11 @@
                             <div class="line-gray"></div>
                             <Row class="margin-top-8">
                                 <Col span="8"><p class="notwrap">上次登录时间:</p></Col>
-                                <Col span="16" class="padding-left-8">2017.09.12-13:32:20</Col>
+                                <Col span="16" class="padding-left-8">2018.04.12-13:32:20</Col>
                             </Row>
                             <Row class="margin-top-8">
                                 <Col span="8"><p class="notwrap">上次登录地点:</p></Col>
-                                <Col span="16" class="padding-left-8">北京</Col>
+                                <Col span="16" class="padding-left-8">绍兴</Col>
                             </Row>
                         </Card>
                     </Col>
@@ -197,26 +197,23 @@ export default {
         return {
             toDoList: [
                 {
-                    title: '去iView官网学习完整的iView组件'
+                    title: '将摄像头记录导出未表格文件'
                 },
                 {
-                    title: '去iView官网学习完整的iView组件'
+                    title: '增加一批摄像头'
                 },
                 {
-                    title: '去iView官网学习完整的iView组件'
+                    title: '处理当天的故障申请'
                 },
                 {
-                    title: '去iView官网学习完整的iView组件'
-                },
-                {
-                    title: '去iView官网学习完整的iView组件'
+                    title: '系统安全测试'
                 }
             ],
             count: {
-                createUser: 496,
-                visit: 3264,
-                collection: 24389305,
-                transfer: 39503498
+                createUser: 10,
+                visit: 20,
+                collection: 2438930,
+                transfer: 3950349
             },
             cityData: cityData,
             showAddNewTodo: false,

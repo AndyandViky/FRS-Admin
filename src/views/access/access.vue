@@ -63,8 +63,8 @@ export default {
                 this.accessCode = 1;
                 Cookies.set('access', 1);
             } else {
-                this.accessCode = 0;
-                Cookies.set('access', 0);
+                this.accessCode = 2;
+                Cookies.set('access', 2);
             }
             this.$store.commit('updateMenulist');
         }
