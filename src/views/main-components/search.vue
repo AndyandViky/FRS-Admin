@@ -4,9 +4,9 @@
 
 <template>
     <Row class="search">
-        <Select v-model="searchCondition.areaSelect" v-show="isSuperManage" style="width:200px">
-            <Option v-for="item in adress" :value="item.value" :key="item.value">{{ item.label }}</Option>
-        </Select>
+        <Col span="4">
+            <Cascader :data="adress" v-model="searchCondition.adress"></Cascader>
+        </Col>
         <DatePicker type="daterange" split-panels v-model="dateFilter" placeholder="请选择时间..." style="width: 200px"></DatePicker>
         <Input v-model="searchCondition.searchConName" placeholder="请输入关键字搜搜..." style="width: 200px" />
         <span @click="handleSearch" style="margin: 0 10px;"><Button type="primary" icon="search">搜索</Button></span>
@@ -20,12 +20,63 @@ export default {
         return {
             isSuperManage: false,
             dateFilter: '',
-            adress: [],
+            provinceIndex: -1,
+            cityIndex: -1,
+            conmunityIndex: -1,
+            adress: [
+                {
+                    value: '北京',
+                    label: '北京',
+                    children: [
+                        {
+                            value: '幸福小区1',
+                            label: '幸福小区1'
+                        },
+                        {
+                            value: '幸福小区2',
+                            label: '幸福小区2'
+                        },
+                        {
+                            value: '幸福小区3',
+                            label: '幸福小区3'
+                        }
+                    ]
+                }, {
+                    value: '江苏',
+                    label: '江苏',
+                    children: [
+                        {
+                            value: '南京',
+                            label: '南京',
+                            children: [
+                                {
+                                    value: '幸福小区4',
+                                    label: '幸福小区4',
+                                }
+                            ]
+                        },
+                        {
+                            value: '苏州',
+                            label: '苏州',
+                            children: [
+                                {
+                                    value: '幸福小区5',
+                                    label: '幸福小区5',
+                                },
+                                {
+                                    value: '幸福小区6',
+                                    label: '幸福小区6',
+                                }
+                            ]
+                        }
+                    ],
+                }
+            ],
             searchCondition: {
                 searchConName: '',
                 begin: '',
                 end: '',
-                areaSelect: '',
+                adress: [],
             },
         };
     },
@@ -33,27 +84,18 @@ export default {
         if(this.$store.state.user.auth === 2) {
             // 此处判断用户权限
             this.isSuperManage = true;
-            // 获取地区数据
-            this.adress = [
-                {
-                    value: '1',
-                    label: '幸福花园小区1'
-                },
-                {
-                    value: '2',
-                    label: '幸福花园小区2'
-                },
-                {
-                    value: '3',
-                    label: '幸福花园小区3'
-                }
-            ]
         }
     },
     methods: {
         handleSearch() {
             // ... 将时间字符串转换
             this.$emit("searchCondition", this.searchCondition)
+        }
+    },
+    watch: {
+        provinceIndex(val) {
+            this.cityIndex = -1;
+            this.conmunityIndex = -1;
         }
     }
 };

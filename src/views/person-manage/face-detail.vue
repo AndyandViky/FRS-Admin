@@ -17,9 +17,10 @@
     }
     .delete-icon{
         position: absolute;
-        top: 5px;
+        top: 3px;
+        font-size: 14px;
         z-index: 100;
-        right: 8px;
+        right: 5px;
         color: #999;
         cursor: pointer;
     }
@@ -31,7 +32,7 @@
         <Row class="margin-top-10">
             <CheckboxGroup v-model="chooseBox">
                 <Col span="8" v-for="(item, index) in imageData" :key="index">
-                    <Icon type="close-round" class="delete-icon" @click.native="deleteFaceImage(index)"></Icon>
+                    <Icon type="close-round" class="delete-icon" v-show="showCheckBox" @click.native="deleteFaceImage(index)"></Icon>
                     <Checkbox class="choose-box" size="large" :label="item.id" v-show="showCheckBox">
                     </Checkbox>
                     <Card class="card">

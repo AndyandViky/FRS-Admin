@@ -130,11 +130,11 @@
             <Col :md="24" :lg="8" :style="{marginBottom: '10px'}">
                 <Card>
                     <p slot="title" class="card-title">
-                        <Icon type="android-map"></Icon>
-                        上周每日来访量统计
+                        <Icon type="ios-pulse-strong"></Icon>
+                        今日开门统计
                     </p>
                     <div class="data-source-row">
-                        <visite-volume></visite-volume>
+                        <data-source-pie :id="'tody_open'" :data="[30000, 40000]"></data-source-pie>
                     </div>
                 </Card>
             </Col>
@@ -142,21 +142,21 @@
                 <Card>
                     <p slot="title" class="card-title">
                         <Icon type="ios-pulse-strong"></Icon>
-                        数据来源统计
+                        本周开门统计
                     </p>
                     <div class="data-source-row">
-                        <data-source-pie></data-source-pie>
+                        <data-source-pie :id="'week_open'" :data="[40000, 100000]"></data-source-pie>
                     </div>
                 </Card>
             </Col>
-            <Col :md="24" :lg="8">
+            <Col :md="24" :lg="8" :style="{marginBottom: '10px'}">
                 <Card>
                     <p slot="title" class="card-title">
-                        <Icon type="android-wifi"></Icon>
-                        各类用户服务调用变化统计
+                        <Icon type="ios-pulse-strong"></Icon>
+                        本月开门统计
                     </p>
                     <div class="data-source-row">
-                        <user-flow></user-flow>
+                        <data-source-pie :id="'month_open'" :data="[200000, 670000]"></data-source-pie>
                     </div>
                 </Card>
             </Col>
@@ -165,10 +165,10 @@
             <Card>
                 <p slot="title" class="card-title">
                     <Icon type="ios-shuffle-strong"></Icon>
-                    上周每日服务调用量(万)
+                    上周每日开门方式曲线图
                 </p>
-                <div class="line-chart-con">
-                    <service-requests></service-requests>
+                <div class="line-chart-con" style="height: 300px">
+                    <open-door-data></open-door-data>
                 </div>
             </Card>
         </Row>
@@ -179,26 +179,19 @@
 import cityData from './map-data/get-city-value.js';
 import homeMap from './components/map.vue';
 import dataSourcePie from './components/dataSourcePie.vue';
-import visiteVolume from './components/visiteVolume.vue';
-import serviceRequests from './components/serviceRequests.vue';
-import userFlow from './components/userFlow.vue';
-import countUp from './components/countUp.vue';
 import inforCard from './components/inforCard.vue';
 import mapDataTable from './components/mapDataTable.vue';
 import toDoListItem from './components/toDoListItem.vue';
-
+import openDoorData from './components/openDoorData.vue';
 export default {
     name: 'home',
     components: {
         homeMap,
         dataSourcePie,
-        visiteVolume,
-        serviceRequests,
-        userFlow,
-        countUp,
         inforCard,
         mapDataTable,
-        toDoListItem
+        toDoListItem,
+        openDoorData
     },
     data () {
         return {

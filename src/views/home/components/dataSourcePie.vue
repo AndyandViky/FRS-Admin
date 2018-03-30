@@ -1,5 +1,5 @@
 <template>
-    <div style="width:100%;height:100%;" id="data_source_con"></div>
+    <div style="width:100%;height:100%;" :id="id"></div>
 </template>
 
 <script>
@@ -12,9 +12,13 @@ export default {
             //
         };
     },
+    props: {
+        id: String,
+        data: Array
+    },
     mounted () {
         this.$nextTick(() => {
-            var dataSourcePie = echarts.init(document.getElementById('data_source_con'));
+            var dataSourcePie = echarts.init(document.getElementById(this.id));
             const option = {
                 tooltip: {
                     trigger: 'item',
@@ -23,7 +27,7 @@ export default {
                 legend: {
                     orient: 'vertical',
                     left: 'right',
-                    data: ['ios', 'android', 'pc', 'web', 'others']
+                    data: ["手机", "摄像头"]
                 },
                 series: [
                     {
@@ -32,11 +36,8 @@ export default {
                         radius: '66%',
                         center: ['50%', '60%'],
                         data: [
-                            {value: 2103456, name: 'ios', itemStyle: {normal: {color: '#9bd598'}}},
-                            {value: 1305923, name: 'android', itemStyle: {normal: {color: '#ffd58f'}}},
-                            {value: 543250, name: 'pc', itemStyle: {normal: {color: '#abd5f2'}}},
-                            {value: 798403, name: 'web', itemStyle: {normal: {color: '#ab8df2'}}},
-                            {value: 302340, name: 'others', itemStyle: {normal: {color: '#e14f60'}}}
+                            {value: this.data[0], name: '手机', itemStyle: {normal: {color: '#e14f60'}}},
+                            {value: this.data[1], name: '摄像头', itemStyle: {normal: {color: '#ab8df2'}}},
                         ],
                         itemStyle: {
                             emphasis: {

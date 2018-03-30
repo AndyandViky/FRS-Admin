@@ -17,6 +17,17 @@
         </Spin>
         <Row>
             <Card>
+                <Modal
+                    v-model="modal"
+                    title="增加摄像头数据"
+                    @on-ok="postForm"
+                    :scrollable="true">
+                    <Form :model="formItem" :label-width="80" :rules="inforValidate" ref="forms">
+                        <FormItem label="编号" prop="cameraNum">
+                            <Input v-model="formItem.cameraNum" placeholder="请输入摄像头编号..."></Input>
+                        </FormItem>
+                    </Form>
+                </Modal>
                 <Button type="primary" class="addButton" @click="addItem">增加</Button>
                 <search @searchCondition="getSearchData"></search>
                 <Row>
@@ -25,7 +36,7 @@
                             <p slot="title">
                                 <Icon type="ios-keypad"></Icon>
                                 当前摄像头数据
-                                <Icon type="refresh" class="reload-camera" title="刷新" @click="reloadCamera"></Icon>
+                                <Icon type="refresh" class="reload-camera" title="刷新" @click.native="reloadCamera"></Icon>
                             </p>
                             <div>
                                 <Table border :columns="cameraColums" :data="cameraData" refs="camera"></Table>
@@ -48,6 +59,17 @@ export default {
     },
     data () {
         return {
+            modal: false,
+            formItem: {
+                cameraNum: '',
+                isOpen: 0,
+                isOperated: 0,
+            },
+            inforValidate: {
+                cameraNum: [
+                    { required: true, message: '请输入摄像头编号', trigger: 'blur' }
+                ],
+            },
             cameraData: [
                 {
                     cameraNum: '0001',
@@ -96,13 +118,25 @@ export default {
             return null
         },
         reloadCamera () {
-            
+            this.cameraLoading = true;
+            this.loadingText = "刷新中, 请稍后...";
+            setTimeout(() => {
+                this.cameraLoading = false;
+            }, 2000)
         },
         getSearchData() {
             alert(1);
         },
         addItem() {
-            
+            this.modal = true;
+        },
+        postForm() {
+            this.$refs['forms'].validate((valid) => {
+                if (valid) {
+                    this.cameraData.push(this.formItem);
+                    this.$Message.info("添加成功");
+                } else this.$Message.warning("添加失败, 输入错误");
+            });
         }
     }
 };

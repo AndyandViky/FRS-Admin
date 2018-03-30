@@ -7,7 +7,7 @@
     <div>
         <Row>
             <Card>
-                <Button type="primary" class="addButton" @click="addItem">增加</Button>
+                <addModal @postForm="getForm"></addModal>
                 <search @searchCondition="getSearchData"></search>
                 <Row>
                     <Col span="100">
@@ -32,11 +32,13 @@ import canEditTable from './components/canEditTable.vue';
 import tableData from './components/table_data.js';
 import { visitorColums } from '@/util/table-columns.js'
 import search from '../main-components/search.vue'
+import addModal from '../main-components/add-modal.vue'
 export default {
     name: 'property',
     components: {
         canEditTable,
-        search
+        search,
+        addModal
     },
     data () {
         return {
@@ -64,8 +66,8 @@ export default {
         getFaceModel(index) {
             this.$router.push({path: '/face/'+this.visitorData[index].id})
         },
-        addItem() {
-            
+        getForm(data) {
+            this.visitorData.push(data);
         }
     },
     created () {

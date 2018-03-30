@@ -111,7 +111,7 @@ export default {
         },
         getSearchData() {
             alert(1);
-        }
+        },
     }
 };
 </script>
