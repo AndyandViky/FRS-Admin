@@ -7,6 +7,7 @@
     <div>
         <Row>
             <Card>
+                <Button type="primary" class="addButton" @click="addItem">增加</Button>
                 <search @searchCondition="getSearchData"></search>
                 <Row>
                     <Col span="100">
@@ -62,6 +63,9 @@ export default {
         },
         getFaceModel(index) {
             this.$router.push({path: '/face/'+this.householdData[index].id})
+        },
+        addItem() {
+            
         }
     },
     created () {

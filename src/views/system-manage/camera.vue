@@ -17,6 +17,7 @@
         </Spin>
         <Row>
             <Card>
+                <Button type="primary" class="addButton" @click="addItem">增加</Button>
                 <search @searchCondition="getSearchData"></search>
                 <Row>
                     <Col span="100">
@@ -99,6 +100,9 @@ export default {
         },
         getSearchData() {
             alert(1);
+        },
+        addItem() {
+            
         }
     }
 };
