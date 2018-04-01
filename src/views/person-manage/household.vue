@@ -68,6 +68,9 @@ export default {
         },
         getForm(data) {
             this.propertyData.push(data);
+        },
+        getVisitorLog(index) {
+            this.$router.push({path: '/visitor/household/'+this.householdData[index].id})
         }
     },
     created () {

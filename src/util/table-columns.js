@@ -336,6 +336,7 @@ const baseColums = function (self, tableData) {
             render: (h, params) => {
                 const row = params.row;
                 const text = row.is_active === 1 ? '已激活' : '未激活';
+                const color = row.is_active === 1 ? '#666' : 'red';
                 const title = row.is_active === 1 ? '取消激活' : '激活';
                 return h('Poptip', {
                     props: {
@@ -363,7 +364,8 @@ const baseColums = function (self, tableData) {
                         },
                         style: {
                             padding: '0 4px',
-                            cursor: 'pointer'
+                            cursor: 'pointer',
+                            color: color
                         }
                     }, text)
                 ]);
@@ -384,7 +386,7 @@ const baseColums = function (self, tableData) {
                 }, [
                     h('img', {
                         domProps: {
-                            src: tableData[params.index].image,
+                            src: tableData[params.index].avatar,
                             title: '点击更换头像'
                         },
                         style: {
@@ -423,6 +425,26 @@ const baseColums = function (self, tableData) {
             }
         },
         {
+            title: '查看当前访客',
+            width: 200,
+            align: 'center',
+            render: (h, params) => {
+                return h('span', {
+                    domProps: {
+                        title: '查看访问记录'
+                    },
+                    style: {
+                        cursor: 'pointer'
+                    },
+                    on: {
+                        'click': () => {
+                            self.getVisitorLog(params.index);
+                        }
+                    }
+                }, '查看访问记录');
+            }
+        },
+        {
             title: '人脸图像',
             align: 'center',
             width: 200,
@@ -457,63 +479,197 @@ const propertyColums = function (self, tableData) {
 };
 
 const householdColums = function (self, tableData) {
-    return baseColums(self, tableData);
+    const base = baseColums(self, tableData);
+    base.splice(-3, 0, {
+        title: '业主证明',
+        key: 'identity_pic',
+        width: 200,
+        align: 'center',
+        render: (h, params) => {
+            return h('Poptip', {
+                props: {
+                    trigger: 'hover',
+                    placement: 'bottom'
+                }
+            }, [
+                h('img', {
+                    domProps: {
+                        src: tableData[params.index].identity_pic
+                    },
+                    style: {
+                        width: '32px',
+                        height: '24px'
+                    }
+                }),
+                h('div', {
+                    slot: 'content'
+                }, [
+                    h('img', {
+                        style: {
+                            width: '320px',
+                            height: '240px'
+                        },
+                        domProps: {
+                            src: tableData[params.index].identity_pic
+                        }
+                    })
+                ])
+            ]);
+        }
+    });
+    base.splice(-3, 0, {
+        title: '身份证正面',
+        key: 'card_front',
+        width: 200,
+        align: 'center',
+        render: (h, params) => {
+            return h('Poptip', {
+                props: {
+                    trigger: 'hover',
+                    placement: 'bottom'
+                }
+            }, [
+                h('img', {
+                    domProps: {
+                        src: tableData[params.index].card_front
+                    },
+                    style: {
+                        width: '32px',
+                        height: '24px'
+                    }
+                }),
+                h('div', {
+                    slot: 'content'
+                }, [
+                    h('img', {
+                        style: {
+                            width: '320px',
+                            height: '240px'
+                        },
+                        domProps: {
+                            src: tableData[params.index].card_front
+                        }
+                    })
+                ])
+            ]);
+        }
+    });
+    base.splice(-3, 0, {
+        title: '身份证反面',
+        key: 'identity_pic',
+        width: 200,
+        align: 'center',
+        render: (h, params) => {
+            return h('Poptip', {
+                props: {
+                    trigger: 'hover',
+                    placement: 'bottom'
+                }
+            }, [
+                h('img', {
+                    domProps: {
+                        src: tableData[params.index].card_opposite
+                    },
+                    style: {
+                        width: '32px',
+                        height: '24px'
+                    }
+                }),
+                h('div', {
+                    slot: 'content'
+                }, [
+                    h('img', {
+                        style: {
+                            width: '320px',
+                            height: '240px'
+                        },
+                        domProps: {
+                            src: tableData[params.index].card_opposite
+                        }
+                    })
+                ])
+            ]);
+        }
+    });
+    return base;
 };
 
 const visitorColums = function (self, tableData) {
     const base = baseColums(self, tableData);
-    base.splice(2, 0, {
-        title: '户主地址',
-        key: 'belong',
-        width: 150,
-        align: 'center'
-    });
-    base.splice(-2, 0, {
-        title: '状态',
-        key: 'deadline',
-        width: 150,
-        align: 'center',
-        filters: [
-            {
-                label: '已生效',
-                value: 1
-            },
-            {
-                label: '未生效',
-                value: 2
-            }
-        ],
-        filterMultiple: false,
-        filterMethod (value, row) {
-            if (value === 1) {
-                return row.deadline > Date.now();
-            } else if (value === 2) {
-                return row.deadline < Date.now();
-            }
-        },
-        render: (h, params) => {
-            const row = params.row;
-            const color = row.deadline > Date.now() ? '#666' : 'red';
-            const text = row.deadline > Date.now() ? '生效' : '失效';
-            const title = row.deadline > Date.now() ? '' : '点击延期';
-            return h('span', {
-                domProps: {
-                    title: title
-                },
-                style: {
-                    padding: '0 4px',
-                    color: color,
-                    cursor: 'pointer'
-                },
-                on: {
-                    'click': () => {
-                        self.handleExtension(params.index);
-                    }
-                }
-            }, text);
-        }
-    });
     return base;
+};
+
+const visitorLogColums = function (self, tableData) {
+    return [
+        {
+            title: '序号',
+            type: 'index',
+            width: 80,
+            align: 'center',
+            fixed: 'left'
+        },
+        {
+            title: '所属地',
+            key: 'area',
+            align: 'center'
+        },
+        {
+            title: '户主地址',
+            key: 'belong',
+            align: 'center'
+        },
+        {
+            title: '姓名',
+            align: 'center',
+            key: 'name'
+        },
+        {
+            title: '状态',
+            key: 'deadline',
+            align: 'center',
+            filters: [
+                {
+                    label: '已生效',
+                    value: 1
+                },
+                {
+                    label: '未生效',
+                    value: 2
+                }
+            ],
+            filterMultiple: false,
+            filterMethod (value, row) {
+                const isUse = parseInt(row.pass_time + row.deadline * 3600 * 24 * 1000);
+                if (value === 1) {
+                    return isUse > Date.now();
+                } else if (value === 2) {
+                    return isUse < Date.now();
+                }
+            },
+            render: (h, params) => {
+                const row = params.row;
+                const isUse = parseInt(row.pass_time + row.deadline * 3600 * 24 * 1000);
+                const color = isUse > Date.now() ? '#666' : 'red';
+                const text = isUse > Date.now() ? '生效' : '失效';
+                const title = isUse > Date.now() ? '' : '点击延期';
+                return h('span', {
+                    domProps: {
+                        title: title
+                    },
+                    style: {
+                        padding: '0 4px',
+                        color: color,
+                        cursor: 'pointer'
+                    },
+                    on: {
+                        'click': () => {
+                            self.handleExtension(row, params.index);
+                        }
+                    }
+                }, text);
+            }
+        }
+    ];
 };
 
 const notRegisterColums = function (self, tableData) {
@@ -719,6 +875,164 @@ const bugColums = function (self, tableData) {
     ];
 };
 
+const questionColums = function (self, tableData) {
+    return [
+        {
+            title: '序号',
+            type: 'index',
+            width: 80,
+            align: 'center',
+            fixed: 'left'
+        },
+        {
+            title: '标题',
+            align: 'center',
+            ellipsis: true,
+            width: 200,
+            key: 'title'
+        },
+        {
+            title: '内容',
+            align: 'center',
+            ellipsis: true,
+            key: 'content'
+        },
+        {
+            title: '点赞数',
+            width: 80,
+            align: 'center',
+            key: 'like'
+        },
+        {
+            title: '查看当前回答',
+            width: 150,
+            align: 'center',
+            render: (h, params) => {
+                return h('span', {
+                    domProps: {
+                        title: '查看当前回答'
+                    },
+                    style: {
+                        cursor: 'pointer'
+                    },
+                    on: {
+                        'click': () => {
+                            self.getAnswer(params.index);
+                        }
+                    }
+                }, '查看当前回答');
+            }
+        },
+        {
+            title: '发布时间',
+            width: 150,
+            align: 'center',
+            key: 'create_at',
+            render: (h, params) => {
+                return h('div', formatDate(tableData[params.index].create_at));
+            }
+        },
+        {
+            title: '操作',
+            width: 200,
+            align: 'center',
+            render: (h, params) => {
+                return h('div', [
+                    h('Button', {
+                        props: {
+                            type: 'primary'
+                        },
+                        style: {
+                            marginRight: '5px'
+                        },
+                        on: {
+                            click: () => {
+                                self.showModal(params.row, params.index);
+                            }
+                        }
+                    }, '修改'),
+                    h('Button', {
+                        props: {
+                            type: 'error'
+                        },
+                        on: {
+                            click: () => {
+                                self.remove(tableData, params.index);
+                            }
+                        }
+                    }, '删除')
+                ]);
+            }
+        }
+    ];
+};
+
+const answerColums = function (self, tableData) {
+    return [
+        {
+            title: '序号',
+            type: 'index',
+            width: 80,
+            align: 'center',
+            fixed: 'left'
+        },
+        {
+            title: '标题',
+            align: 'center',
+            ellipsis: true,
+            width: 200,
+            key: 'title'
+        },
+        {
+            title: '内容',
+            align: 'center',
+            ellipsis: true,
+            key: 'content'
+        },
+        {
+            title: '回答时间',
+            width: 150,
+            align: 'center',
+            key: 'create_at',
+            render: (h, params) => {
+                return h('div', formatDate(tableData[params.index].create_at));
+            }
+        },
+        {
+            title: '操作',
+            width: 200,
+            align: 'center',
+            render: (h, params) => {
+                return h('div', [
+                    h('Button', {
+                        props: {
+                            type: 'primary'
+                        },
+                        style: {
+                            marginRight: '5px'
+                        },
+                        on: {
+                            click: () => {
+                                self.showModal(params.row, params.index);
+                            }
+                        }
+                    }, '修改'),
+                    h('Button', {
+                        props: {
+                            type: 'error'
+                        },
+                        on: {
+                            click: () => {
+                                self.remove(tableData, params.index);
+                            }
+                        }
+                    }, '删除')
+                ]);
+            }
+        }
+    ];
+};
+
 export {
     cameraRecordColums,
     cameraColums,
@@ -726,5 +1040,8 @@ export {
     householdColums,
     visitorColums,
     notRegisterColums,
-    bugColums
+    bugColums,
+    visitorLogColums,
+    questionColums,
+    answerColums
 };

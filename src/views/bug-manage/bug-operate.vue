@@ -78,7 +78,14 @@ export default {
             if (this.bugData[index].status === 0) {
                 this.$router.push({path: '/bug/operate/'+this.bugData[index].id})
             } else {
-                val.splice(index, 1)
+                this.$Modal.confirm({
+                    title: "删除数据",
+                    content: "是否删除此条数据?",
+                    onOk: () => {
+                        val.splice(index, 1);
+                        this.$Message.info("删除成功");
+                    }
+                })
             }
         },
     },

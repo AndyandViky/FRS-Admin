@@ -56,6 +56,8 @@ export const otherRouter = {
     redirect: '/home',
     component: Main,
     children: [
+        { path: 'question/:id', title: '查看回答', name: 'answer-detail', component: () => import('@/views/info-manage/answer.vue') },
+        { path: 'visitor/:type/:id', title: '访客查看记录详情', name: 'visitor-detail', component: () => import('@/views/person-manage/visitor-detail.vue') },
         { path: 'face/:id', title: '人脸详情', name: 'face-detail', component: () => import('@/views/person-manage/face-detail.vue') },
         { path: 'article/:id', title: '文章详情', name: 'artical-detail', component: () => import('@/views/info-manage/article-detail.vue') },
         { path: 'bug/operate/:id', title: '故障详情', name: 'bug-detail', component: () => import('@/views/bug-manage/bug-detail.vue') },
@@ -137,6 +139,7 @@ export const appRouter = [
             { path: 'artical-publish', title: '文章发布', name: 'artical-publish', icon: 'compose', component: () => import('@/views/info-manage/article-publish.vue') },
             { path: 'artical-list', title: '文章列表', name: 'artical-list', icon: 'document-text', component: () => import('@/views/info-manage/article-list.vue') },
             { path: 'notice', title: '通知管理', name: 'community-notice', icon: 'chatboxes', component: () => import('@/views/info-manage/community-notice.vue') },
+            { path: 'question', title: '问答管理', name: 'user-question', icon: 'chatboxes', component: () => import('@/views/info-manage/question-answer.vue') },
         ]
     },
     {
