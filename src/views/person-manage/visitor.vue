@@ -29,7 +29,6 @@
 
 <script>
 import canEditTable from './components/canEditTable.vue';
-import tableData from './components/table_data.js';
 import { visitorColums } from '@/util/table-columns.js'
 import search from '../main-components/search.vue'
 import { User } from '@/api'
@@ -65,10 +64,26 @@ export default {
             
         },
         handleDel (val, index) {
-            this.$Message.success('删除了第' + (index + 1) + '行数据');
+            const data = this.visitorData[index];
+            User.deleteUser({
+                userId: data.id,
+                type: data.types
+            }).then(result => {
+                this.$Message.success('删除成功');
+            })
         },
         handleChange (val, index) {
-            this.$Message.success('修改了第' + (index + 1) + '行数据');
+            const data = this.visitorData[index];
+            User.changeUserInfo({
+                email: data.email,
+                name: data.name,
+                phone: data.phone,
+                gender: data.gender,
+                age: data.age,
+                userId: data.id,
+            }).then(result => {
+                this.$Message.success('修改成功');
+            })
         },
         getFaceModel(index) {
             this.$router.push({path: '/face/'+this.visitorData[index].id})

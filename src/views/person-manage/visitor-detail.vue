@@ -10,7 +10,7 @@
                 <search @searchCondition="getSearchData"></search>
                 <Row>
                     <Col span="18">
-                        <Table :data="tableData" :columns="visitorRecordColums" stripe ref="table"></Table>
+                        <Table :data="tableData" :columns="visitorRecordColums" stripe ref="tableExcel"></Table>
                     </Col>
                     <Col span="6" class="padding-left-20">
                         <div class="margin-bottom-10">
@@ -41,9 +41,9 @@
 <script>
 import html2canvas from 'html2canvas';
 import table2excel from '@/libs/table2excel.js';
-import tableData from './components/table_data.js';
 import { visitorLogColums } from '@/util/table-columns.js'
 import search from '../main-components/search.vue'
+import { User } from '@/api'
 export default {
     name: 'table-to-image',
     components: {
@@ -57,10 +57,23 @@ export default {
             excelFileName: '',
             tableExcel: {},
             visitorRecordColums: [],
+            total: 0,
         };
     },
-    created() {
-        this.tableData = tableData.visitorDetailData;
+    async created() {
+        const userId = this.$route.params.id;
+        const data = await User.getVisitorRecord({
+            pageNo: 1,
+            pageSize: 10,
+            userId
+        });
+        this.tableData = data.datas;
+        for(const item of this.tableData) {
+            item.name = item.people.name;
+            item.belong = '15-622';
+            item.adress = '幸福花园小区';
+        }
+        this.total = data.total;
         this.visitorRecordColums = visitorLogColums(this, this.tableData)
     },
     methods: {
@@ -107,10 +120,15 @@ export default {
                         this.$Message.error('输入天数必须大于0 小于 30');
                         return;
                     }
-                    val.pass_time = Date.now();
-                    val.deadline = parseInt(val.deadline+this.extentionTime);
-                    this.$Message.info('延期成功');
-                },
+                    User.addVisiteTime({
+                        deadline: this.extentionTime,
+                        recordId: this.tableData[index].id
+                    }).then(result => {
+                        val.pass_time = Date.now();
+                        val.deadline = parseInt(val.deadline+this.extentionTime);
+                        this.$Message.info('延期成功');
+                    });
+                },  
                 render: (h) => {
                     return h('Input', {
                         props: {

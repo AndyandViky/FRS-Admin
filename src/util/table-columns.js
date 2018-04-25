@@ -1,4 +1,3 @@
-import { formatDate } from '@/libs/common.js';
 const cameraRecordColums = function (tableData) {
     return [
         {
@@ -652,7 +651,7 @@ const visitorLogColums = function (self, tableData) {
         },
         {
             title: '所属地',
-            key: 'area',
+            key: 'adress',
             align: 'center'
         },
         {
