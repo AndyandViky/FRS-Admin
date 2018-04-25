@@ -3,20 +3,34 @@ const cameraRecordColums = function (tableData) {
     return [
         {
             title: '地区',
-            key: 'name'
+            key: 'name',
+            width: 120
         },
         {
             title: '所属地区',
-            key: 'belong'
+            key: 'belong',
+            width: 100
         },
         {
             title: '人员类别',
             align: 'center',
-            key: 'type'
+            width: 100,
+            key: 'types',
+            render: (h, params) => {
+                const row = params.row;
+                const text = row.types === 1 ? '访客' : row.types === 2 ? '业主' : row.types === 3 ? '物业' : '管理员';
+                return h('span', {
+                    style: {
+                        padding: '0 4px'
+                    }
+                }, text);
+            }
         },
         {
             title: '门禁类别',
-            key: 'types',
+            key: 'type',
+            width: 100,
+            align: 'center',
             filters: [
                 {
                     label: '识别进入',
@@ -30,15 +44,15 @@ const cameraRecordColums = function (tableData) {
             filterMultiple: false,
             filterMethod (value, row) {
                 if (value === 1) {
-                    return row.status < 2;
+                    return row.type < 1;
                 } else if (value === 2) {
-                    return row.status > 1;
+                    return row.type > 0;
                 }
             },
             render: (h, params) => {
                 const row = params.row;
-                const color = row.status === 1 ? 'green' : 'red';
-                const text = row.status === 1 ? 'camera' : 'app';
+                const color = row.type === 0 ? 'green' : 'red';
+                const text = row.type === 0 ? 'camera' : 'app';
 
                 return h('Tag', {
                     props: {
@@ -53,8 +67,9 @@ const cameraRecordColums = function (tableData) {
         },
         {
             title: '门禁图',
-            key: 'image',
+            key: 'face_img',
             render: (h, params) => {
+                const row = params.row;
                 return h('Poptip', {
                     props: {
                         trigger: 'hover',
@@ -63,7 +78,7 @@ const cameraRecordColums = function (tableData) {
                 }, [
                     h('img', {
                         domProps: {
-                            src: tableData[params.index].image
+                            src: row.face_img
                         },
                         style: {
                             width: '32px',
@@ -79,7 +94,7 @@ const cameraRecordColums = function (tableData) {
                                 height: '240px'
                             },
                             domProps: {
-                                src: tableData[params.index].image
+                                src: row.face_img
                             }
                         })
                     ])
@@ -89,9 +104,9 @@ const cameraRecordColums = function (tableData) {
         {
             title: '进入人数',
             sortable: true,
-            key: 'people',
+            key: 'count',
             align: 'center',
-            width: 150,
+            width: 130,
             filters: [
                 {
                     label: '一人进入',
@@ -105,21 +120,22 @@ const cameraRecordColums = function (tableData) {
             filterMultiple: false,
             filterMethod (value, row) {
                 if (value === 1) {
-                    return row.people < 2;
+                    return row.count < 2;
                 } else if (value === 2) {
-                    return row.people > 3;
+                    return row.count > 3;
                 }
             },
             render: (h, params) => {
-                return h('div', params.row.people + ' 人');
+                return h('div', params.row.count + ' 人');
             }
         },
         {
             title: '进入时间',
+            width: 120,
             sortable: true,
             key: 'create',
             render: (h, params) => {
-                return h('div', formatDate(tableData[params.index].create));
+                return h('div', params.row.created_at.substring(0, 10));
             }
         }
     ];
@@ -136,17 +152,17 @@ const cameraColums = function (self) {
         {
             title: '摄像头编号',
             align: 'center',
-            key: 'cameraNum',
+            key: 'camera_num',
             width: 200
         },
         {
             title: '开启状态',
             align: 'center',
-            key: 'isOpen',
+            key: 'status',
             render: (h, params) => {
                 const row = params.row;
-                const color = row.isOpen === 1 ? 'green' : 'red';
-                const text = row.isOpen === 1 ? '开启' : '关闭';
+                const color = row.status === 1 ? 'green' : 'red';
+                const text = row.status === 1 ? '开启' : '关闭';
 
                 return h('Tag', {
                     props: {
@@ -163,11 +179,11 @@ const cameraColums = function (self) {
             title: '处理状态',
             align: 'center',
             width: 300,
-            key: 'isOperated',
+            key: 'is_operated',
             render: (h, params) => {
                 const row = params.row;
-                const color = row.isOperated === 1 ? 'green' : 'red';
-                const text = row.isOperated === 1 ? '处理中' : '未处理';
+                const color = row.is_operated === 1 ? 'green' : 'red';
+                const text = row.is_operated === 1 ? '处理中' : '未处理';
 
                 return h('Tag', {
                     props: {
@@ -187,8 +203,8 @@ const cameraColums = function (self) {
             key: 'handle',
             render: (h, params) => {
                 const row = params.row;
-                const text = row.isOpen === 1 ? '关闭' : '开启';
-                const color = row.isOpen === 1 ? 'error' : 'primary';
+                const text = row.status === 1 ? '关闭' : '开启';
+                const color = row.status === 1 ? 'error' : 'primary';
                 return h('Poptip', {
                     props: {
                         confirm: true,
@@ -197,7 +213,7 @@ const cameraColums = function (self) {
                     },
                     on: {
                         'on-ok': () => {
-                            self.handleCamera(row.cameraNum);
+                            self.handleCamera(row.camera_num);
                         }
                     }
                 }, [
@@ -226,8 +242,8 @@ const baseColums = function (self, tableData) {
         },
         {
             title: '所属地',
-            key: 'area',
-            width: 150,
+            key: 'adress',
+            width: 200,
             align: 'center'
         },
         {
@@ -591,11 +607,37 @@ const householdColums = function (self, tableData) {
             ]);
         }
     });
+    base.splice(-1, 0, {
+        title: '审核',
+        width: 80,
+        fixed: 'right',
+        align: 'center',
+        render: (h, params) => {
+            const row = params.row;
+            const text = row.is_verify === 1 ? '已审核' : '审核';
+            const color = row.is_verify === 1 ? 'success' : 'primary';
+            return h('div', [
+                h('Button', {
+                    props: {
+                        type: color
+                    },
+                    on: {
+                        click: () => {
+                            if (row.is_verify === 0) {
+                                self.activeResident(params.index);
+                            }
+                        }
+                    }
+                }, text)
+            ]);
+        }
+    });
     return base;
 };
 
 const visitorColums = function (self, tableData) {
     const base = baseColums(self, tableData);
+    base.splice(-3, 1);
     return base;
 };
 
@@ -676,7 +718,8 @@ const notRegisterColums = function (self, tableData) {
     return [
         {
             title: '地区',
-            key: 'name'
+            key: 'belong',
+            align: 'center'
         },
         {
             title: '性别',
@@ -684,8 +727,7 @@ const notRegisterColums = function (self, tableData) {
             key: 'gender',
             sortable: true,
             render: (h, params) => {
-                const row = params.row;
-                const text = row.gender === 1 ? '女' : '男';
+                const text = '暂无';
                 return h('span', text);
             }
         },
@@ -718,8 +760,9 @@ const notRegisterColums = function (self, tableData) {
         },
         {
             title: '门禁图',
-            key: 'image',
+            key: 'face_img',
             render: (h, params) => {
+                const row = params.row;
                 return h('Poptip', {
                     props: {
                         trigger: 'hover',
@@ -728,7 +771,7 @@ const notRegisterColums = function (self, tableData) {
                 }, [
                     h('img', {
                         domProps: {
-                            src: tableData[params.index].image
+                            src: row.face_img
                         },
                         style: {
                             width: '32px',
@@ -744,7 +787,7 @@ const notRegisterColums = function (self, tableData) {
                                 height: '240px'
                             },
                             domProps: {
-                                src: tableData[params.index].image
+                                src: row.face_img
                             }
                         })
                     ])
@@ -754,7 +797,7 @@ const notRegisterColums = function (self, tableData) {
         {
             title: '人数',
             sortable: true,
-            key: 'people',
+            key: 'count',
             filters: [
                 {
                     label: '一人',
@@ -768,21 +811,21 @@ const notRegisterColums = function (self, tableData) {
             filterMultiple: false,
             filterMethod (value, row) {
                 if (value === 1) {
-                    return row.people < 2;
+                    return row.count < 2;
                 } else if (value === 2) {
-                    return row.people > 3;
+                    return row.count > 3;
                 }
             },
             render: (h, params) => {
-                return h('div', params.row.people + ' 人');
+                return h('div', params.row.count + ' 人');
             }
         },
         {
             title: '记录时间',
             sortable: true,
-            key: 'create',
+            key: 'created_at',
             render: (h, params) => {
-                return h('div', formatDate(tableData[params.index].create));
+                return h('div', params.row.created_at.substring(0, 10));
             }
         }
     ];
@@ -812,19 +855,18 @@ const bugColums = function (self, tableData) {
         {
             title: '故障名',
             align: 'center',
-            key: 'name',
+            key: 'title',
             width: 200
         },
         {
             title: '状态',
             align: 'center',
             sortable: true,
-            key: 'status',
             width: 150,
             render: (h, params) => {
                 const row = params.row;
-                const color = row.status === 1 ? 'green' : 'red';
-                const text = row.status === 1 ? '已处理' : '未处理';
+                const color = row.result ? 'green' : 'red';
+                const text = row.result ? '已处理' : '未处理';
 
                 return h('Tag', {
                     props: {
@@ -843,7 +885,7 @@ const bugColums = function (self, tableData) {
             sortable: true,
             key: 'created_at',
             render: (h, params) => {
-                return h('div', formatDate(tableData[params.index].created_at));
+                return h('div', params.row.created_at.substring(0, 10));
             }
         },
         {
@@ -853,8 +895,8 @@ const bugColums = function (self, tableData) {
             align: 'center',
             render: (h, params) => {
                 const row = params.row;
-                const type = row.status === 1 ? 'error' : 'primary';
-                const text = row.status === 1 ? '删除' : '处理';
+                const type = row.result ? 'error' : 'primary';
+                const text = row.result ? '删除' : '处理';
                 return h('div', [
                     h('Button', {
                         props: {
@@ -888,14 +930,8 @@ const questionColums = function (self, tableData) {
             title: '标题',
             align: 'center',
             ellipsis: true,
-            width: 200,
+            width: 450,
             key: 'title'
-        },
-        {
-            title: '内容',
-            align: 'center',
-            ellipsis: true,
-            key: 'content'
         },
         {
             title: '点赞数',
@@ -929,7 +965,7 @@ const questionColums = function (self, tableData) {
             align: 'center',
             key: 'create_at',
             render: (h, params) => {
-                return h('div', formatDate(tableData[params.index].create_at));
+                return h('div', params.row.created_at.substring(0, 10));
             }
         },
         {
@@ -995,7 +1031,7 @@ const answerColums = function (self, tableData) {
             align: 'center',
             key: 'create_at',
             render: (h, params) => {
-                return h('div', formatDate(tableData[params.index].create_at));
+                return h('div', params.row.created_at.substring(0, 10));
             }
         },
         {

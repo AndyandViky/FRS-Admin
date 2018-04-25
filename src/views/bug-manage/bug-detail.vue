@@ -16,16 +16,16 @@
                             </p>
                             <Form :model="formItem" :label-width="80">
                                 <FormItem label="故障名:">
-                                    <p>{{bug.name}}</p>
+                                    <p>{{bug.title}}</p>
                                 </FormItem>
                                 <FormItem label="故障内容:">
                                     <p>{{bug.content}}</p>
                                 </FormItem>
                                 <FormItem label="处理内容">
-                                    <Input v-model="formItem.recall" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="故障回复"></Input>
+                                    <Input v-model="formItem.result" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="故障回复"></Input>
                                 </FormItem>
                                 <FormItem>
-                                    <Button type="primary">提交</Button>
+                                    <Button type="primary" @click="operatedBug">提交</Button>
                                 </FormItem>
                             </Form>
                         </Card>
@@ -37,21 +37,35 @@
 </template>
 
 <script>
+import { Bug } from '@/api' 
 export default {
     name: 'bug-detail',
     data () {
         return {
             bug: {
-                name: '小区门禁开不了',
+                title: '小区门禁开不了',
                 content: '多次走到小区门, 门自动打开失败!',
             },
             formItem: {
-                recall: '',
+                bugId: '',
+                result: '',
             }
         };
     },
     methods: {
-
+        async operatedBug() {
+            if (this.formItem.result === '' || this.formItem.bugId === '') {
+                return this.$Message.error("回复内容不能为空");
+            }
+            await Bug.operatedBug(this.formItem);
+            this.$Message.info("处理成功");
+            this.$router.go(-1);
+        }
+    },
+    async created() {
+        const id = this.$route.params.id;
+        this.formItem.bugId = id;
+        this.bug = await Bug.getBug({id})
     }
 };
 </script>

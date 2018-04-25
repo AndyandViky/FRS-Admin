@@ -39,7 +39,7 @@
                     </p>
                     <p class="margin-top-10">
                         <Icon type="android-time"></Icon>&nbsp;&nbsp;状&nbsp;&nbsp;&nbsp; 态：
-                        <Select size="small" style="width:90px" value="草稿">
+                        <Select size="small" style="width:90px" value="草稿" v-model="articleStatus">
                             <Option v-for="item in articleStateList" :value="item.value" :key="item.value">{{ item.value }}</Option>
                         </Select>
                     </p>
@@ -111,11 +111,13 @@
 
 <script>
 import tinymce from 'tinymce';
+import { Article } from '@/api';
 export default {
     name: 'artical-publish',
     data () {
         return {
             articleTitle: '',
+            articleStatus: 0,
             articleError: '',
             showLink: false,
             fixedLink: '',
@@ -143,7 +145,7 @@ export default {
     methods: {
         handleArticletitleBlur () {
             if (this.articleTitle.length !== 0) {
-                // this.articleError = '';
+
                 localStorage.articleTitle = this.articleTitle; // 本地存储文章标题
                 if (!this.articlePathHasEdited) {
                     let date = new Date();
@@ -156,7 +158,6 @@ export default {
                     this.showLink = true;
                 }
             } else {
-                // this.articleError = '文章标题不可为空哦';
                 this.$Message.error('文章标题不可为空哦');
             }
         },
@@ -228,13 +229,25 @@ export default {
         handlePublish () {
             if (this.canPublish()) {
                 this.publishLoading = true;
-                setTimeout(() => {
-                    this.publishLoading = false;
-                    this.$Notice.success({
-                        title: '保存成功',
-                        desc: '文章《' + this.articleTitle + '》保存成功'
-                    });
-                }, 1000);
+                const data = {
+                    title: this.articleTitle,
+                    content: tinymce.activeEditor.getContent(),
+                    status: this.articleStatus,
+                    tag: '',
+                    category: '',
+                }
+                Article.addArticle(data).then(result => {
+                    setTimeout(() => {
+                        this.publishLoading = false;
+                        this.$Notice.success({
+                            title: '保存成功',
+                            desc: '文章《' + this.articleTitle + '》保存成功'
+                        });
+                    }, 1000);
+                })
+                .catch(e => {
+                    this.$Message.error("发布失败");
+                })
             }
         },
         handleSelectTag () {
@@ -250,12 +263,11 @@ export default {
     },
     mounted () {
         this.articleTagList = [
-            {value: 'vue'},
-            {value: 'iview'},
-            {value: 'ES6'},
-            {value: 'webpack'},
-            {value: 'babel'},
-            {value: 'eslint'}
+            {value: '新闻'},
+            {value: '动态'},
+            {value: '活动'},
+            {value: '美食'},
+            {value: '通知'},
         ];
         this.classificationList = [
             {

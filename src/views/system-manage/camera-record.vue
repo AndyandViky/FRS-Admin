@@ -10,7 +10,7 @@
                 <search @searchCondition="getSearchData"></search>
                 <Row>
                     <Col span="18">
-                        <Table :data="tableData1" :columns="cameraRecordColums" stripe ref="table"></Table>
+                        <Table :data="tableData1" :columns="cameraRecordColums" stripe ref="tableExcel"></Table>
                     </Col>
                     <Col span="6" class="padding-left-20">
                         <div class="margin-bottom-10">
@@ -28,7 +28,7 @@
                             <Input v-model="excelFileName" icon="document" placeholder="请输入文件名" style="width: 190px" />
                         </div>
                         <div class="margin-left-10 margin-top-20">
-                            <a id="hrefToExportTable" style="postion: absolute;left: -10px;top: -10px;width: 0px;height: 0px;"></a>
+                            <a id="hrefToExportTable1" style="postion: absolute;left: -10px;top: -10px;width: 0px;height: 0px;"></a>
                             <Button type="primary" size="large" @click="exportExcel">下载表格数据</Button>
                         </div>
                     </Col>
@@ -43,6 +43,8 @@ import html2canvas from 'html2canvas';
 import table2excel from '@/libs/table2excel.js';
 import { cameraRecordColums } from '@/util/table-columns.js'
 import search from '../main-components/search.vue'
+import { Camera } from '@/api'
+import { imageUrl } from '@/util/env'
 export default {
     name: 'table-to-image',
     components: {
@@ -50,7 +52,7 @@ export default {
     },
     data () {
         return {
-            tableData1: this.mockTableData1(),
+            tableData1: [],
             imageName: '',
             excelFileName: '',
             tableExcel: {},
@@ -58,24 +60,25 @@ export default {
         };
     },
     created() {
+        this.getData();
         this.cameraRecordColums = cameraRecordColums(this.tableData1)
     },
     methods: {
-        mockTableData1 () {
-            let data = [];
-            for (let i = 0; i < 20; i++) {
-                data.push({
-                    name: '幸福花园小区',
-                    belong: '15-311',
-                    type: '业主',
-                    status: Math.floor(Math.random() * 2 + 1),
-                    image: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1522044096773&di=71390fc035a383de557dbc9d54adc0ef&imgtype=0&src=http%3A%2F%2Fimg.taopic.com%2Fuploads%2Fallimg%2F120727%2F201995-120HG1030762.jpg',
-                    people: Math.floor(Math.random() * 7 + 1),
-                    time: Math.floor(Math.random() * 7 + 1),
-                    create: new Date()
-                });
+        async getData () {
+            const data = {
+                pageNo: 1,
+                pageSize: 10,
+                userId: 0,
             }
-            return data;
+            const result = await  Camera.getNotRgisterRecord(data);
+            this.tableData1 = result.datas.map(item => {
+                item.name = "幸福花园小区";
+                item.types = item.people.types;
+                item.belong = item.people.house_number;
+                item.face_img = item.face_img.substring(6);
+                item.face_img = imageUrl+item.face_img;
+                return item;
+            });
         },
         exportImage () {
             let vm = this;
@@ -108,7 +111,7 @@ export default {
             });
         },
         exportExcel () {
-            table2excel.transform(this.$refs.tableExcel, 'hrefToExportTable', this.excelFileName);
+            table2excel.transform(this.$refs.tableExcel, 'hrefToExportTable1', this.excelFileName);
         },
         getSearchData() {
             alert(1);

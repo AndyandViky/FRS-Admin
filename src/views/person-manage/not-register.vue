@@ -10,7 +10,7 @@
                 <search @searchCondition="getSearchData"></search>
                 <Row>
                     <Col span="18">
-                        <Table :data="tableData" :columns="notRegisterColums" stripe ref="table"></Table>
+                        <Table :data="tableData" :columns="notRegisterColums" stripe ref="tableExcel"></Table>
                     </Col>
                     <Col span="6" class="padding-left-20">
                         <div class="margin-bottom-10">
@@ -43,6 +43,8 @@ import html2canvas from 'html2canvas';
 import table2excel from '@/libs/table2excel.js';
 import { notRegisterColums } from '@/util/table-columns.js'
 import search from '../main-components/search.vue'
+import { User } from '@/api'
+import { imageUrl } from '@/util/env'
 export default {
     name: 'table-to-image',
     components: {
@@ -50,7 +52,7 @@ export default {
     },
     data () {
         return {
-            tableData: this.mockTableData1(),
+            tableData: [],
             imageName: '',
             excelFileName: '',
             tableExcel: {},
@@ -59,22 +61,27 @@ export default {
     },
     created() {
         this.notRegisterColums = notRegisterColums(self, this.tableData)
+        this.getData();
     },
     methods: {
-        mockTableData1 () {
-            let data = [];
-            for (let i = 0; i < 20; i++) {
-                data.push({
-                    name: '幸福花园小区',
-                    gender: Math.floor(Math.random() * 1),
-                    age: Math.floor(Math.random() * 50 + 1),
-                    image: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1522044096773&di=71390fc035a383de557dbc9d54adc0ef&imgtype=0&src=http%3A%2F%2Fimg.taopic.com%2Fuploads%2Fallimg%2F120727%2F201995-120HG1030762.jpg',
-                    people: Math.floor(Math.random() * 7 + 1),
-                    time: Math.floor(Math.random() * 7 + 1),
-                    create: new Date()
+        async getData () {
+            const data = {
+                pageNo: 1,
+                pageSize: 10,
+                userId: -1,
+            }
+            const result = await User.getNotRgisterRecord(data);
+            console.log(result.datas);
+            if (result.datas.length > 0) {
+                this.tableData = result.datas.map(item => {
+                    item.belong = "幸福花园小区";
+                    item.age="暂无";
+                    item.gender="暂无";
+                    item.face_img = item.face_img.substring(6);
+                    item.face_img = imageUrl+item.face_img;
+                    return item;
                 });
             }
-            return data;
         },
         exportImage () {
             let vm = this;

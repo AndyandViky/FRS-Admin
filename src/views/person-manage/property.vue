@@ -6,7 +6,7 @@
 <template>
     <div>
         <Row>
-            <Card class="card">
+            <Card>
                 <addModal @postForm="getForm"></addModal>
                 <search @searchCondition="getSearchData"></search>
                 <Row>
@@ -28,11 +28,12 @@
 </template>
 
 <script>
-import canEditTable from './components/canEditTable.vue';
-import tableData from './components/table_data.js';
+import canEditTable from './components/canEditTable.vue'
+import tableData from './components/table_data.js'
 import { propertyColums } from '@/util/table-columns.js'
 import search from '../main-components/search.vue'
 import addModal from '../main-components/add-modal.vue'
+import { User } from '@/api' 
 export default {
     name: 'property',
     components: {
@@ -44,11 +45,17 @@ export default {
         return {
             propertyColumns: [],
             propertyData: [],
+            total: 0,
         };
     },
     methods: {
-        getData () {
-            this.propertyData = tableData.propertyData;
+        async getData () {
+            const data = await User.getUsers({pageNo: 1, pageSize: 10, types: 3});
+            this.propertyData = data.datas;
+            for (const item of this.propertyData) {
+                item.adress = item.adress.province + "-" + item.adress.city + "-" + item.adress.community;
+            }
+            this.total = data.total;
             this.propertyColumns = propertyColums(this, this.propertyData);
         },
         getSearchData(data) {

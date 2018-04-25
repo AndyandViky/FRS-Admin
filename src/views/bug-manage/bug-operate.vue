@@ -29,6 +29,7 @@
 <script>
 import { bugColums } from '@/util/table-columns.js'
 import search from '../main-components/search.vue'
+import { Bug } from '@/api'
 export default {
     name: 'bug-apply',
     components: {
@@ -42,40 +43,21 @@ export default {
         };
     },
     methods: {
-        getData () {
-            this.bugData = [
-                {
-                    id: 1,
-                    name: '小区门禁识别不了',
-                    area: '幸福花园小区',
-                    belong: '15-311',
-                    status: 1,
-                    created_at: new Date(),
-                },
-                {
-                    id: 2,
-                    name: '小区门禁识别不了',
-                    area: '幸福花园小区',
-                    belong: '15-311',
-                    status: 0,
-                    created_at: new Date(),
-                },
-                {
-                    id: 3,
-                    name: '小区门禁识别不了',
-                    area: '幸福花园小区',
-                    belong: '15-311',
-                    status: 1,
-                    created_at: new Date(),
-                }
-            ];
+        async getData () {
+            const result = await Bug.getBugs({pageNo: 1, pageSize: 10});
+            console.log(result);
+            this.bugData = result.datas;
+            for(const item of this.bugData) {
+                item.area = "幸福花园小区";
+                item.belong = "15-622";
+            }
             this.bugColumns = bugColums(this, this.bugData);
         },
         getSearchData(data) {
             alert(1);
         },
         handle (val, index) {
-            if (this.bugData[index].status === 0) {
+            if (!this.bugData[index].result) {
                 this.$router.push({path: '/bug/operate/'+this.bugData[index].id})
             } else {
                 this.$Modal.confirm({

@@ -106,7 +106,10 @@ export default {
             }, '还原');
         };
         return {
-            formItem: [],
+            formItem: {
+                title: '',
+                content: '',
+            },
             currentMesList: [],
             unsendMesList: [],
             hassendMesList: [],
@@ -233,21 +236,28 @@ export default {
             // you can write ajax request here to get message content
             let mesContent = '';
             switch (this.currentMessageType + index) {
-                case 'send0': mesContent = '这是您点击的《欢迎登录iView-admin后台管理系统，来了解他的用途吧》的相关内容。'; break;
+                case 'send0': mesContent = '门禁系统识别手机通过率增加警告: 尊敬的管理员, 检测到当前系统的识别率过低, 为48%, 请尽快查看系统运行状态'; break;
                 case 'send1': mesContent = '这是您点击的《使用iView-admin和iView-ui组件库快速搭建你的后台系统吧》的相关内容。'; break;
                 case 'send2': mesContent = '这是您点击的《喜欢iView-admin的话，欢迎到github主页给个star吧》的相关内容。'; break;
-                case 'unsend0': mesContent = '这是您点击的《这是一条您已经读过的通知》的相关内容。'; break;
-                default: mesContent = '这是您点击的《这是一条被删除的通知》的相关内容。'; break;
+                case 'unsend0': mesContent = '门禁系统识别手机通过率增加警告: 尊敬的管理员, 检测到当前系统的识别率过低, 为48%, 请尽快查看系统运行状态'; break;
+                default: mesContent = '注册通知: 欢迎注册智能门禁系统......'; break;
             }
             this.mes.content = mesContent;
         },
         sendNotice() {
+            if (this.formItem.title === '' || this.formItem.content === '') {
+                return this.$Message.warning("请输入通知信息");
+            }
+            this.formItem.time = Date.now();
+            this.hassendMesList.push(this.formItem);
+            this.currentMesList = this.hassendMesList;
             this.currentMessageType = 'hassend';
             this.showCreate = false;
             this.$Message.info("发送成功");
         },
         saveNotice() {
             this.currentMessageType = 'unsend';
+            this.currentMesList = this.unsendMesList;
             this.showCreate = false;
             this.$Message.info("保存成功");
         }
@@ -255,28 +265,28 @@ export default {
     mounted () {
         this.currentMesList = this.unsendMesList = [
             {
-                title: '欢迎登录iView-admin后台管理系统，来了解他的用途吧',
-                time: 1507390106000
+                title: '门禁系统识别手机通过率增加警告',
+                time: 1523464232768
             },
             {
-                title: '使用iView-admin和iView-ui组件库快速搭建你的后台系统吧',
-                time: 1507390106000
+                title: '用户{杨林}提交了故障申报',
+                time: 1523434132768
             },
             {
-                title: '喜欢iView-admin的话，欢迎到github主页给个star吧',
-                time: 1507390106000
+                title: '用户{王婉瑾}提交了故障申报',
+                time: 1523263232768
             }
         ];
         this.hassendMesList = [
             {
-                title: '这是一条您已经发送的通知',
-                time: 1507330106000
+                title: '注册通知: 欢迎注册智能门禁系统......',
+                time: 1523434132768
             }
         ];
         this.recyclebinList = [
             {
-                title: '这是一条被删除的通知',
-                time: 1506390106000
+                title: '用户{夏证}提交了故障申报',
+                time: 1523263232768
             }
         ];
         this.unsendCount = this.unsendMesList.length;

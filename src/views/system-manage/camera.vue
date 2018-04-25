@@ -39,7 +39,7 @@
                                 <Icon type="refresh" class="reload-camera" title="刷新" @click.native="reloadCamera"></Icon>
                             </p>
                             <div>
-                                <Table border :columns="cameraColums" :data="cameraData" refs="camera"></Table>
+                                <Table border :columns="cameraColums" :data="cameraData" refs="cameraTable"></Table>
                             </div>  
                         </Card>
                     </Col>
@@ -52,6 +52,7 @@
 <script>
 import { cameraColums } from '@/util/table-columns.js'
 import search from '../main-components/search.vue'
+import {User} from '@/api'
 export default {
     name: 'camera-manage',
     components: {
@@ -71,49 +72,48 @@ export default {
                 ],
             },
             cameraData: [
-                {
-                    cameraNum: '0001',
-                    isOpen: 1,
-                    isOperated: 1
-                },
-                {
-                    cameraNum: '0002',
-                    isOpen: 0,
-                    isOperated: 0
-                },
-                {
-                    cameraNum: '0003',
-                    isOpen: 1,
-                    isOperated: 0
-                }
             ],
             cameraColums: [],
             cameraLoading: false,
             loadingText: '',
         };
     },
-    created() {
+    async created() {
         this.cameraColums = cameraColums(this);
+        this.cameraData = await User.getAllCamera();
+        console.log(this.cameraData)
     },
     methods: {
-        handleCamera (cameraNum) {
+        async handleCamera (cameraNum) {
             const camera = this.getCamera(cameraNum)
             this.cameraLoading = true;
             setTimeout(() => {
                 this.cameraLoading = false;
             }, 2000)
-            if (camera.isOpen === 1) {
-                camera.isOpen = 0;
-                camera.isOperated = 0;
+            if (camera.status === 1) {
                 this.loadingText = "关闭中, 请稍后...";
+                User.closeCamera({cameraNum :camera.camera_num}).then((result) => {
+                    camera.status = 0;
+                    camera.is_operated = 0;
+                })
+                .catch((e)=> {
+                    this.$Message.warning("关闭失败");
+                });
+
             } else {
-                camera.isOpen = 1;
-                this.loadingText = "开启中, 请稍后...";
+                this.loadingText = "开启, 请稍后...";
+                User.openCamera({cameraNum :camera.camera_num}).then((result) => {
+                    camera.status = 1;
+                    camera.is_operated = 1;
+                })
+                .catch((e)=> {
+                    this.$Message.warning("开启失败");
+                });
             }
         },
         getCamera (cameraNum) {
             for(let i=0; i<this.cameraData.length; i++) {
-                if(this.cameraData[i].cameraNum === cameraNum) return this.cameraData[i]
+                if(this.cameraData[i].camera_num === cameraNum) return this.cameraData[i]
             }
             return null
         },

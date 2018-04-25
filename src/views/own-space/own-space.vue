@@ -239,7 +239,7 @@ export default {
                 }
             });
         },
-        init () {
+        async init () {
             this.userForm.name = 'Lison';
             this.userForm.cellphone = '17712345678';
             this.initPhone = '17712345678';

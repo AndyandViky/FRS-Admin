@@ -33,6 +33,8 @@ import tableData from './components/table_data.js';
 import { householdColums } from '@/util/table-columns.js'
 import search from '../main-components/search.vue'
 import addModal from '../main-components/add-modal.vue'
+import { User } from '@/api'
+import { baseUrl } from '@/util/env.js' 
 export default {
     name: 'property',
     components: {
@@ -44,18 +46,42 @@ export default {
         return {
             householdColumns: [],
             householdData: [],
+            total: 0,
         };
     },
     methods: {
-        getData () {
-            this.householdData = tableData.householdData;
+        async getData () {
+            const result = await User.getUsers({pageNo: 1, pageSize: 10, types: 2});
+            this.householdData = result.datas;
+            for(const item of this.householdData) {
+                item.adress = item.adress.province + "-" + item.adress.city + "-" + item.adress.community;
+                item.is_verify = item.user.is_verify;
+                if (item.user.identity_pic) item.identity_pic = baseUrl + "/" + item.user.identity_pic.substring(6);
+                if (item.user.card_front) item.card_front = baseUrl + "/" + item.user.card_front.substring(6);
+                if (item.user.card_opposite) item.card_opposite = baseUrl + "/" + item.user.card_opposite.substring(6);
+            }
             this.householdColumns = householdColums(this, this.householdData);
         },
         getSearchData(data) {
             alert(1);
         },
         handleActive(index) {
-            
+            const id = this.householdData[index].id;   
+        },
+        activeResident(index) {
+            const id = this.householdData[index].id;
+            this.$Modal.confirm({
+                title: "业主认证",
+                content: "是否通过业主认证?",
+                onOk: () => {
+                    User.approveRedident({userId: id}).then(result => {
+                        this.$Message.info("认证成功");
+                    })
+                    .catch(e => {
+                        this.$Message.info("认证成功");
+                    })
+                }
+            })
         },
         handleDel (val, index) {
             this.$Message.success('删除了第' + (index + 1) + '行数据');

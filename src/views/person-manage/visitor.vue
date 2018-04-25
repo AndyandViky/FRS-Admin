@@ -32,6 +32,7 @@ import canEditTable from './components/canEditTable.vue';
 import tableData from './components/table_data.js';
 import { visitorColums } from '@/util/table-columns.js'
 import search from '../main-components/search.vue'
+import { User } from '@/api'
 import addModal from '../main-components/add-modal.vue'
 export default {
     name: 'property',
@@ -44,11 +45,17 @@ export default {
         return {
             visitorColumns: [],
             visitorData: [],
+            total: 0,
         };
     },
     methods: {
-        getData () {
-            this.visitorData = tableData.visitorData;
+        async getData () {
+            const data = await User.getUsers({pageNo: 1, pageSize: 10, types: 1});
+            this.visitorData = data.datas;
+            for (const item of this.visitorData) {
+                item.adress = item.adress.province + "-" + item.adress.city + "-" + item.adress.community;
+            }
+            this.total = data.total;
             this.visitorColumns = visitorColums(this, this.visitorData);
         },
         getSearchData(data) {

@@ -37,7 +37,7 @@
                     </Checkbox>
                     <Card class="card">
                         <center>
-                            <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1522044096773&di=71390fc035a383de557dbc9d54adc0ef&imgtype=0&src=http%3A%2F%2Fimg.taopic.com%2Fuploads%2Fallimg%2F120727%2F201995-120HG1030762.jpg" class="face-image"/>
+                            <img :src="item.path" class="face-image"/>
                         </center>
                     </Card>
                 </Col>
@@ -53,18 +53,18 @@ export default {
             imageData: [
                 {
                     id: 1,
+                    path: "http://localhost:8000/images/face/8EyQv8rnWG-M4yCVDLrHkzid.jpg",
                 },
                 {
                     id: 2,
+                    path: "http://localhost:8000/images/face/24wOVJgOE5bywIGsg4KF7_2d.jpg",
                 },
                 {
                     id: 3,
+                    path: "http://localhost:8000/images/face/KJmJqH9TILRviQhs-aNJrjAq.jpg",
                 },
-                {
-                    id: 4,
-                }
             ],
-            chooseBox: [1, 2, 3],
+            chooseBox: [1],
             disable: false,
             showCheckBox: false,
             buttonText: '编辑'
@@ -88,7 +88,7 @@ export default {
                 onOk: () => {
                     this.deleteCheckBox(this.imageData[index].id)
                     this.imageData.splice(index, 1);
-                    this.$Message.info('点击了删除');
+                    this.$Message.info('删除成功');
                 }
             });
         },

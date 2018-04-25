@@ -19,31 +19,21 @@
 
 <script>
 import { questionColums } from '@/util/table-columns.js'
+import { Question } from '@/api'
 export default {
     name: 'table-to-image',
     data () {
         return {
-            tableData: this.mockTableData1(),
+            tableData: [],
             questionColums: [],
         };
     },
-    created() {
+    async created() {
+        const data = await Question.getQuestions({pageNo: 1, pageSize: 10});
+        this.tableData = data.datas;
         this.questionColums = questionColums(this, this.tableData)
     },
     methods: {
-        mockTableData1 () {
-            let data = [];
-            for (let i = 0; i < 20; i++) {
-                data.push({
-                    id: i,
-                    title: '这是我的标题',
-                    content: '大家好, 这是我的标题我的标题, 我的标题, 大家好, 这是我的标题我的标题, 我的标题,大家好, 这是我的标题我的标题, 我的标题',
-                    like: i,
-                    create_at: new Date()
-                });
-            }
-            return data;
-        },
         getAnswer(index) {
             this.$router.push({path: '/question/'+this.tableData[index].id})
         },
@@ -72,17 +62,16 @@ export default {
                         }),
                         h('Input', {
                             props: {
-                                value: val.content,
+                                value: val.like,
                                 autofocus: true,
-                                placeholder: '请输入内容',
-                                type: 'textarea',
+                                placeholder: '请输入点赞数'
                             },
                             style: {
                                 marginTop: '20px'
                             },
                             on: {
                                 input: (value) => {
-                                    val.content = value;
+                                    val.like = value;
                                 }
                             }
                         }),

@@ -19,28 +19,28 @@
 
 <script>
 import { answerColums } from '@/util/table-columns.js'
+import { Question } from '@/api'
 export default {
-    name: 'table-to-image',
+    name: 'answer',
     data () {
         return {
-            tableData: this.mockTableData1(),
+            tableData: [],
             answerColums: [],
+            total: 0,
         };
     },
     created() {
+        this.getData();
         this.answerColums = answerColums(this, this.tableData)
     },
     methods: {
-        mockTableData1 () {
-            let data = [];
-            for (let i = 0; i < 20; i++) {
-                data.push({
-                    title: '这是我的标题',
-                    content: '大家好, 这是我的标题我的标题, 我的标题, 大家好, 这是我的标题我的标题, 我的标题,大家好, 这是我的标题我的标题, 我的标题',
-                    create_at: new Date()
-                });
+        async getData () {
+            const questionId = this.$route.params.id;
+            const data = await Question.getQuestion({ questionId });
+            this.tableData = data.answers;
+            for(const item of this.tableData) {
+                item.title = data.question.title;
             }
-            return data;
         },
         showModal(val, index) {
             this.$Modal.confirm({
@@ -50,21 +50,11 @@ export default {
                 },
                 render: (h) => {
                     return h('div', [
-                        h('Input', {
-                            props: {
-                                value: val.title,
-                                autofocus: true,
-                                placeholder: '请输入标题'
-                            },
+                        h('p', {
                             style: {
                                 marginTop: '20px'
                             },
-                            on: {
-                                input: (value) => {
-                                    val.title = value;
-                                }
-                            }
-                        }),
+                        }, val.title),
                         h('Input', {
                             props: {
                                 value: val.content,

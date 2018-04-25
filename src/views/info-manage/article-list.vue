@@ -8,17 +8,17 @@
         <Row class="margin-top-20">
             <Col span="18">
                 <div>
-                    <Card v-for='item in articleData' :key='item'>
+                    <Card v-for='(item, index) in articleData' :key='index'>
                         <router-link :to='{path: "/article/"+item.id}'><h1 style="color:#666">{{ item.title }}</h1></router-link>
                         <p class="preview-publish-time"><Icon type="android-alarm-clock"></Icon>&nbsp;发布时间：{{ item.created_at }}</p>
                         <div class="preview-tags-con">
-                            <b class="preview-tip"><Icon type="ios-pricetags-outline"></Icon>&nbsp;标签：</b><Tag v-for="tag in item.tagsList" type="border" color="blue" :key="tag">{{ tag }}</Tag>
+                            <b class="preview-tip"><Icon type="ios-pricetags-outline"></Icon>&nbsp;标签：</b><Tag v-for="(tag, index) in item.tag" type="border" color="blue" :key="index">{{ tag }}</Tag>
                         </div>
                         <div class="preview-classifition-con">
                             <b class="preview-tip"><Icon type="navicon-round"></Icon>&nbsp;目录：</b>
-                            <a class="preview-classifition-item" v-for="catalog in item.catalogs" :key="catalog">
+                            <a class="preview-classifition-item" v-for="(category, index) in item.category" :key="index">
                                 <Icon type="android-folder-open"></Icon>
-                                {{ catalog }}
+                                {{ category }}
                             </a>
                         </div>
                     </Card>
@@ -32,7 +32,7 @@
                             热门文章
                         </p>
                         <div class="preview-placeholderCon">
-                            <div class="preview-placeholder" v-for='item in articleData' :key='item'>
+                            <div class="preview-placeholder" v-for='(item, index) in articleData' :key='index'>
                                 <router-link :to='{path: "/article/"+item.id}' style="color: #666">
                                     {{item.title}}
                                 </router-link>
@@ -47,7 +47,7 @@
                             最新文章
                         </p>
                         <div class="preview-placeholderCon">
-                            <div class="preview-placeholder" v-for='item in articleData' :key='item'>
+                            <div class="preview-placeholder" v-for='(item, index) in articleData' :key='index'>
                                 <router-link :to='{path: "/article/"+item.id}' style="color: #666">
                                     {{item.title}}
                                 </router-link>
@@ -61,51 +61,24 @@
 </template>
 
 <script>
+import { Article } from '@/api'
 export default {
     data () {
         return {
             articleData: [
-                {
-                    id: 1,
-                    title: '15-311发现200块钱',
-                    tagsList: [
-                        '失物招领'
-                    ],
-                    catalogs: [
-                        '失物招领',
-                        '失物招领'
-                    ],
-                    created_at: '2018-1-1 12:30'
-                },
-                {
-                    id: 2,
-                    title: '小区西门拾到一串钥匙',
-                    tagsList: [
-                        '失物招领'
-                    ],
-                    catalogs: [
-                        '失物招领',
-                        '失物招领'
-                    ],
-                    created_at: '2018-1-1 12:30'
-                },
-                {
-                    id: 3,
-                    title: '小区组长开始竞选啦 ! ! !',
-                    tagsList: [
-                        '小区动态'
-                    ],
-                    catalogs: [
-                        '失物招领',
-                        '失物招领'
-                    ],
-                    created_at: '2018-1-1 12:30'
-                }
             ]
         };
     },
-    mounted () {
+    async mounted () {
         // getData
+        const data = await Article.getArticles({pageNo: 1, pageSize: 10});
+        this.articleData = data.datas;
+        console.log(data);
+        for (const item of this.articleData) {
+            item.category = item.category.split(',');
+            item.tag = item.tag.split(',');
+            item.created_at = item.created_at.substring(0, 10);
+        }
     }
 }
 </script>
