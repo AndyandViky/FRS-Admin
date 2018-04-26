@@ -73,7 +73,6 @@ export default {
         // getData
         const data = await Article.getArticles({pageNo: 1, pageSize: 10});
         this.articleData = data.datas;
-        console.log(data);
         for (const item of this.articleData) {
             item.category = item.category.split(',');
             item.tag = item.tag.split(',');

@@ -229,13 +229,27 @@ export default {
         handlePublish () {
             if (this.canPublish()) {
                 this.publishLoading = true;
+                let tag = "", i, category = "";
+                let length = this.articleTagSelected.length;
+                for(i=0; i<length; i++) {
+                    const item = this.articleTagSelected[i];
+                    if (i !== length-1) tag += item + ",";
+                    else tag += item;
+                }
+                length = this.classificationFinalSelected.length;
+                for(i=0; i<length; i++) {
+                    const item = this.classificationFinalSelected[i];
+                    if (i !== length-1) category += item + ",";
+                    else category += item;
+                }
                 const data = {
                     title: this.articleTitle,
                     content: tinymce.activeEditor.getContent(),
                     status: this.articleStatus,
-                    tag: '',
-                    category: '',
+                    tag,
+                    category,
                 }
+
                 Article.addArticle(data).then(result => {
                     setTimeout(() => {
                         this.publishLoading = false;
@@ -244,9 +258,6 @@ export default {
                             desc: '文章《' + this.articleTitle + '》保存成功'
                         });
                     }, 1000);
-                })
-                .catch(e => {
-                    this.$Message.error("发布失败");
                 })
             }
         },

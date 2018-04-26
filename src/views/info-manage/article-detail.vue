@@ -3,55 +3,26 @@
     @import './article-list.less';
     .article-title{
         color: #666;
-        text-align: center;
+        margin-bottom: 20px;
     }
     .article-content{
-        text-indent: 2em;
         line-height: 25px;
-        padding: 10px 20px;
     }
 </style>
 
 <template>
     <div class="preview-main">
         <Row class="margin-top-20">
-            <Col span="18">
+            <Col span="24" class="article-box">
                 <div>
                     <Card>
-                        <h1 class="article-title">弱者普遍</h1>
-                        <Input v-model="content" type="textarea" placeholder="请输入文章内容"></Input>
-                    </Card>
-                </div>
-            </Col>
-            <Col span="6" class="padding-left-10">
-                <div>
-                    <Card>
-                        <p slot="title">
-                            <Icon type="paper-airplane"></Icon>
-                            热门文章
-                        </p>
-                        <div class="preview-placeholderCon">
-                            <div class="preview-placeholder" v-for='item in articleData' :key='item'>
-                                <router-link :to='{path: "/article/"+item.id}' style="color: #666">
-                                    {{item.title}}
-                                </router-link>
-                            </div>
-                        </div>
-                    </Card>
-                </div>
-                <div class="margin-top-10">
-                    <Card>
-                        <p slot="title">
-                            <Icon type="paper-airplane"></Icon>
-                            最新文章
-                        </p>
-                        <div class="preview-placeholderCon">
-                            <div class="preview-placeholder" v-for='item in articleData' :key='item'>
-                                <router-link :to='{path: "/article/"+item.id}' style="color: #666">
-                                    {{item.title}}
-                                </router-link>
-                            </div>
-                        </div>
+                        <Form :label-width="80">
+                            <FormItem label="文章标题">
+                                <Input v-model="title" icon="android-list"/>
+                            </FormItem>
+                        </Form>
+                        <textarea id="articleChange"></textarea>
+                        <Button type="primary" class="margin-top-10" @click="changeArticleInfo">提交修改</Button>
                     </Card>
                 </div>
             </Col>
@@ -60,39 +31,66 @@
 </template>
 
 <script>
+import tinymce from 'tinymce';
+import { Article } from "@/api"
 export default {
     data () {
         return {
-            articleData: [
-                {
-                    id: 1,
-                    title: '15-311发现200块钱',
-                    tagsList: [
-                        '失物招领'
-                    ],
-                    created_at: '2018-1-1 12:30'
-                },
-                {
-                    id: 2,
-                    title: '小区西门拾到一串钥匙',
-                    tagsList: [
-                        '失物招领'
-                    ],
-                    created_at: '2018-1-1 12:30'
-                },
-                {
-                    id: 3,
-                    title: '小区组长开始竞选啦 ! ! !',
-                    tagsList: [
-                        '小区动态'
-                    ],
-                    created_at: '2018-1-1 12:30'
-                }
-            ]
+            title: '',
+            content: '',
+            articleData: []
         };
     },
-    mounted () {
+    async mounted () {
         // getData
+        tinymce.init({
+            selector: '#articleChange',
+            branding: false,
+            elementpath: false,
+            height: 600,
+            language: 'zh_CN.GB2312',
+            menubar: 'edit insert view format table tools',
+            theme: 'modern',
+            plugins: [
+                'advlist autolink lists link image charmap print preview hr anchor pagebreak imagetools',
+                'searchreplace visualblocks visualchars code fullscreen fullpage',
+                'insertdatetime media nonbreaking save table contextmenu directionality',
+                'emoticons paste textcolor colorpicker textpattern imagetools codesample'
+            ],
+            toolbar1: ' newnote print fullscreen preview | undo redo | insert | styleselect | forecolor backcolor bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image emoticons media codesample',
+            autosave_interval: '20s',
+            image_advtab: true,
+            table_default_styles: {
+                width: '100%',
+                borderCollapse: 'collapse'
+            }
+        });
+        const articleId = this.$route.params.id;
+        const data = await Article.getArticle({articleId});
+        if (data) {
+            this.title = data.title;
+            this.content = data.content;
+        }
+        tinymce.activeEditor.setContent(this.content);
+    },
+    methods: {
+        changeArticleInfo() {
+            const articleId = this.$route.params.id;
+            if (this.title === '' || this.content === '') {
+                return this.$Message.warning('文章信息不能为空');
+            }
+            Article.changeArticleInfo({
+                articleId,
+                title: this.title,
+                content: tinymce.activeEditor.getContent(),
+                status: 1,
+            }).then(result => {
+                return this.$Message.success('修改成功');
+            })
+        }
+    },
+    destroyed () {
+        tinymce.get('articleChange').destroy();
     }
 }
 </script>

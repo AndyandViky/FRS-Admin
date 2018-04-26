@@ -38,10 +38,17 @@ export default {
             this.$router.push({path: '/question/'+this.tableData[index].id})
         },
         showModal(val, index) {
+            const questionId = this.$route.params.id;
             this.$Modal.confirm({
                 title: "编辑数据",
                 onOk: () => {
-                    this.$Message.info("修改成功");
+                    Question.changeQuestion({
+                        questionId,
+                        title: val.title,
+                        like: val.like
+                    }).then(result => {
+                        this.$Message.info("修改成功");
+                    })
                 },
                 render: (h) => {
                     return h('div', [
@@ -80,12 +87,15 @@ export default {
             })
         },
         remove(tableData, index) {
+            const questionId = this.$route.params.id;
             this.$Modal.confirm({
                 title: "删除数据",
                 content: "是否删除此条数据?",
                 onOk: () => {
-                    tableData.splice(index, 1);
-                    this.$Message.info("删除成功");
+                    Question.deleteQuestion({ questionId }).then(result => {
+                        tableData.splice(index, 1);
+                        this.$Message.info("删除成功");
+                    })
                 }
             })
         }

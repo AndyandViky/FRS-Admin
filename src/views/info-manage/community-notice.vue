@@ -6,9 +6,6 @@
     <div class="message-main-con">
         <div class="message-mainlist-con">
             <div>
-                <Button @click="setCurrentMesType('unsend')" size="large" long type="text"><transition name="mes-current-type-btn"><Icon v-show="currentMessageType === 'unsend'" type="checkmark"></Icon></transition><span class="mes-type-btn-text">草稿箱</span><Badge class="message-count-badge-outer" class-name="message-count-badge" :count="unsendCount"></Badge></Button>
-            </div>
-            <div>
                 <Button @click="setCurrentMesType('hassend')" size="large" long type="text"><transition name="mes-current-type-btn"><Icon v-show="currentMessageType === 'hassend'" type="checkmark"></Icon></transition><span class="mes-type-btn-text">已发送</span><Badge class="message-count-badge-outer" class-name="message-count-badge" :count="hassendCount"></Badge></Button>
             </div>
             <div>
@@ -54,7 +51,6 @@
                         </FormItem>
                         <FormItem>
                             <Button type="primary" @click="sendNotice">发送</Button>
-                            <Button type="ghost" @click="saveNotice" style="margin-left: 8px">保存为草稿</Button>
                         </FormItem>
                     </Form>
                 </div>
@@ -64,6 +60,7 @@
 </template>
 
 <script>
+import { Notice } from '@/api'
 export default {
     name: 'message_index',
     data () {
@@ -75,7 +72,6 @@ export default {
                 on: {
                     click: () => {
                         this.hassendMesList.unshift(this.currentMesList.splice(params.index, 1)[0]);
-                        this.$store.commit('setMessageCount', this.unsendMesList.length);
                     }
                 }
             }, '发送');
@@ -111,13 +107,11 @@ export default {
                 content: '',
             },
             currentMesList: [],
-            unsendMesList: [],
             hassendMesList: [],
             recyclebinList: [],
-            currentMessageType: 'unsend',
+            currentMessageType: 'hassend',
             showMesTitleList: true,
             showCreate: false,
-            unsendCount: 0,
             hassendCount: 0,
             recyclebinCount: 0,
             noDataText: '暂无通知',
@@ -143,7 +137,7 @@ export default {
                                 click: () => {
                                     this.showMesTitleList = false;
                                     this.mes.title = params.row.title;
-                                    this.mes.time = this.formatDate(params.row.time);
+                                    this.mes.time = params.row.created_at;
                                     this.getContent(params.index);
                                 }
                             }
@@ -171,7 +165,7 @@ export default {
                                     type: 'android-time',
                                     size: 12
                                 }
-                            }, this.formatDate(params.row.time))
+                            }, params.row.created_at)
                         ]);
                     }
                 },
@@ -185,10 +179,6 @@ export default {
                             return h('div', [
                                 deleteMesBtn(h, params)
                             ]);
-                        } else if (this.currentMessageType === 'unsend') {
-                            return h('div', [
-                                markAssendBtn(h, params)
-                            ]);
                         } else {
                             return h('div', [
                                 restoreBtn(h, params)
@@ -200,16 +190,6 @@ export default {
         };
     },
     methods: {
-        formatDate (time) {
-            let date = new Date(time);
-            let year = date.getFullYear();
-            let month = date.getMonth() + 1;
-            let day = date.getDate();
-            let hour = date.getHours();
-            let minute = date.getMinutes();
-            let second = date.getSeconds();
-            return year + '/' + month + '/' + day + '  ' + hour + ':' + minute + ':' + second;
-        },
         backMesTitleList () {
             this.showMesTitleList = true;
         },
@@ -222,9 +202,6 @@ export default {
             if (type === 'hassend') {
                 this.noDataText = '暂无已发送通知';
                 this.currentMesList = this.hassendMesList;
-            } else if (type === 'unsend') {
-                this.noDataText = '暂无未发送通知';
-                this.currentMesList = this.unsendMesList;
             } else if (type === 'create') {
                 this.showCreate = true;
             } else {
@@ -234,15 +211,7 @@ export default {
         },
         getContent (index) {
             // you can write ajax request here to get message content
-            let mesContent = '';
-            switch (this.currentMessageType + index) {
-                case 'send0': mesContent = '门禁系统识别手机通过率增加警告: 尊敬的管理员, 检测到当前系统的识别率过低, 为48%, 请尽快查看系统运行状态'; break;
-                case 'send1': mesContent = '这是您点击的《使用iView-admin和iView-ui组件库快速搭建你的后台系统吧》的相关内容。'; break;
-                case 'send2': mesContent = '这是您点击的《喜欢iView-admin的话，欢迎到github主页给个star吧》的相关内容。'; break;
-                case 'unsend0': mesContent = '门禁系统识别手机通过率增加警告: 尊敬的管理员, 检测到当前系统的识别率过低, 为48%, 请尽快查看系统运行状态'; break;
-                default: mesContent = '注册通知: 欢迎注册智能门禁系统......'; break;
-            }
-            this.mes.content = mesContent;
+            this.mes.content = this.currentMesList[index].content;
         },
         sendNotice() {
             if (this.formItem.title === '' || this.formItem.content === '') {
@@ -255,48 +224,21 @@ export default {
             this.showCreate = false;
             this.$Message.info("发送成功");
         },
-        saveNotice() {
-            this.currentMessageType = 'unsend';
-            this.currentMesList = this.unsendMesList;
-            this.showCreate = false;
-            this.$Message.info("保存成功");
-        }
     },
-    mounted () {
-        this.currentMesList = this.unsendMesList = [
-            {
-                title: '门禁系统识别手机通过率增加警告',
-                time: 1523464232768
-            },
-            {
-                title: '用户{杨林}提交了故障申报',
-                time: 1523434132768
-            },
-            {
-                title: '用户{王婉瑾}提交了故障申报',
-                time: 1523263232768
+    async mounted () {
+        const data = await Notice.getNotices({pageNo: 1, pageSize: 100});
+        for (const item of data.datas) {
+            if (item.deletedAt) {
+                this.recyclebinList.push(item);
+            } else {
+                this.hassendMesList.push(item);
             }
-        ];
-        this.hassendMesList = [
-            {
-                title: '注册通知: 欢迎注册智能门禁系统......',
-                time: 1523434132768
-            }
-        ];
-        this.recyclebinList = [
-            {
-                title: '用户{夏证}提交了故障申报',
-                time: 1523263232768
-            }
-        ];
-        this.unsendCount = this.unsendMesList.length;
+        }
+        this.currentMesList = this.hassendMesList;
         this.hassendCount = this.hassendMesList.length;
         this.recyclebinCount = this.recyclebinList.length;
     },
     watch: {
-        unsendMesList (arr) {
-            this.unsendCount = arr.length;
-        },
         hassendMesList (arr) {
             this.hassendCount = arr.length;
         },
