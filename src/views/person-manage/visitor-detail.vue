@@ -7,9 +7,8 @@
     <div>
         <Row>
             <Card>
-                <search @searchCondition="getSearchData"></search>
                 <Row>
-                    <Col span="18">
+                    <Col span="18" style="min-height: 250px;">
                         <Table :data="tableData" :columns="visitorRecordColums" stripe ref="tableExcel"></Table>
                     </Col>
                     <Col span="6" class="padding-left-20">
@@ -33,6 +32,7 @@
                         </div>
                     </Col>
                 </Row>
+                <center class="margin-top-10"><Page :total="total" @on-page-size-change="pageSizeChange" show-sizer @on-change="changePage"></Page></center>
             </Card>
         </Row>
     </div>
@@ -42,13 +42,9 @@
 import html2canvas from 'html2canvas';
 import table2excel from '@/libs/table2excel.js';
 import { visitorLogColums } from '@/util/table-columns.js'
-import search from '../main-components/search.vue'
 import { User } from '@/api'
 export default {
     name: 'table-to-image',
-    components: {
-        search
-    },
     data () {
         return {
             tableData: [],
@@ -58,25 +54,30 @@ export default {
             tableExcel: {},
             visitorRecordColums: [],
             total: 0,
+            currentPage: 1,
+            pageSize: 10,
         };
     },
     async created() {
-        const userId = this.$route.params.id;
-        const data = await User.getVisitorRecord({
-            pageNo: 1,
-            pageSize: 10,
-            userId
-        });
-        this.tableData = data.datas;
-        for(const item of this.tableData) {
-            item.name = item.people.name;
-            item.belong = '15-622';
-            item.adress = '幸福花园小区';
-        }
-        this.total = data.total;
-        this.visitorRecordColums = visitorLogColums(this, this.tableData)
+        this.getData()
     },
     methods: {
+        async getData() {
+            const userId = this.$route.params.id;
+            const data = await User.getVisitorRecord({
+                pageNo: this.currentPage,
+                pageSize: this.pageSize,
+                userId,
+            });
+            this.tableData = data.datas;
+            for(const item of this.tableData) {
+                item.name = item.people.name;
+                item.belong = '15-622';
+                item.adress = '幸福花园小区';
+            }
+            this.total = data.total;
+            this.visitorRecordColums = visitorLogColums(this, this.tableData)
+        },
         exportImage () {
             let vm = this;
             let table = this.$refs.table.$el;
@@ -109,9 +110,6 @@ export default {
         },
         exportExcel () {
             table2excel.transform(this.$refs.tableExcel, 'hrefToExportTable', this.excelFileName);
-        },
-        getSearchData() {
-            alert(1);
         },
         handleExtension(val, index) {
             this.$Modal.confirm({
@@ -148,6 +146,13 @@ export default {
                 }
             })
         },
+        changePage(page) {
+            this.currentPage = page;
+            this.getData();
+        },
+        pageSizeChange(size) {
+            this.pageSize = size;
+        }
     }
 };
 </script>

@@ -26,7 +26,6 @@ export default {
         return {
             tableData: [],
             answerColums: [],
-            total: 0,
         };
     },
     created() {
@@ -46,7 +45,12 @@ export default {
             this.$Modal.confirm({
                 title: "编辑数据",
                 onOk: () => {
-                    this.$Message.info("修改成功");
+                    Question.changeAnswer({
+                        answerId: val.id,
+                        content: val.content
+                    }).then(result => {
+                        this.$Message.info("修改成功");
+                    })
                 },
                 render: (h) => {
                     return h('div', [
@@ -75,13 +79,17 @@ export default {
                 }
             })
         },
-        remove(tableData, index) {
+        removeAnswer(index) {
             this.$Modal.confirm({
                 title: "删除数据",
                 content: "是否删除此条数据?",
                 onOk: () => {
-                    tableData.splice(index, 1);
-                    this.$Message.info("删除成功");
+                    Question.deleteAnswer({
+                        answerId: this.tableData[index].id
+                    }).then(result => {
+                        this.tableData.splice(index, 1);
+                        this.$Message.info("删除成功");
+                    })
                 }
             })
         }

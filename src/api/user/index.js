@@ -1,5 +1,8 @@
 import {request} from '@/util/axios.js';
 
+// 获取首页数据
+export const getIndexData = (data) => request('/', data, 'get');
+
 // 获取用户列表
 export const getUsers = (data) => request('/users', data, 'get');
 

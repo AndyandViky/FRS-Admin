@@ -7,9 +7,8 @@
     <div>
         <Row>
             <Card>
-                <search @searchCondition="getSearchData"></search>
                 <Row>
-                    <Col span="18">
+                    <Col span="18" style="min-height: 250px;">
                         <Table :data="tableData" :columns="notRegisterColums" stripe ref="tableExcel"></Table>
                     </Col>
                     <Col span="6" class="padding-left-20">
@@ -33,6 +32,7 @@
                         </div>
                     </Col>
                 </Row>
+                <center class="margin-top-10"><Page :total="total" @on-page-size-change="pageSizeChange" show-sizer @on-change="changePage"></Page></center>
             </Card>
         </Row>
     </div>
@@ -42,14 +42,10 @@
 import html2canvas from 'html2canvas';
 import table2excel from '@/libs/table2excel.js';
 import { notRegisterColums } from '@/util/table-columns.js'
-import search from '../main-components/search.vue'
 import { User } from '@/api'
 import { imageUrl } from '@/util/env'
 export default {
     name: 'table-to-image',
-    components: {
-        search
-    },
     data () {
         return {
             tableData: [],
@@ -57,21 +53,23 @@ export default {
             excelFileName: '',
             tableExcel: {},
             notRegisterColums: [],
+            total: 0,
+            currentPage: 1,
+            pageSize: 10,
         };
     },
     created() {
-        this.notRegisterColums = notRegisterColums(self, this.tableData)
         this.getData();
     },
     methods: {
         async getData () {
             const data = {
-                pageNo: 1,
-                pageSize: 10,
+                pageNo: this.currentPage,
+                pageSize: this.pageSize,
                 userId: -1,
             }
             const result = await User.getNotRgisterRecord(data);
-            console.log(result.datas);
+            this.total = result.total;
             if (result.datas.length > 0) {
                 this.tableData = result.datas.map(item => {
                     item.belong = "幸福花园小区";
@@ -82,6 +80,7 @@ export default {
                     return item;
                 });
             }
+            this.notRegisterColums = notRegisterColums(self, this.tableData);
         },
         exportImage () {
             let vm = this;
@@ -116,9 +115,13 @@ export default {
         exportExcel () {
             table2excel.transform(this.$refs.tableExcel, 'hrefToExportTable', this.excelFileName);
         },
-        getSearchData() {
-            alert(1);
+        changePage(page) {
+            this.currentPage = page;
+            this.getData();
         },
+        pageSizeChange(size) {
+            this.pageSize = size;
+        }
     }
 };
 </script>

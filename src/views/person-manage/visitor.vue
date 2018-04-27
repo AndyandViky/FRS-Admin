@@ -21,6 +21,7 @@
                             </div>  
                         </Card>
                     </Col>
+                    <center class="margin-top-10"><Page :total="total" @on-page-size-change="pageSizeChange" show-sizer @on-change="changePage"></Page></center>
                 </Row>
             </Card>
         </Row>
@@ -45,11 +46,14 @@ export default {
             visitorColumns: [],
             visitorData: [],
             total: 0,
+            currentPage: 1,
+            pageSize: 10,
+            searchData: {},
         };
     },
     methods: {
-        async getData () {
-            const data = await User.getUsers({pageNo: 1, pageSize: 10, types: 1});
+        async getData (search) {
+            const data = await User.getUsers({pageNo: this.currentPage, pageSize: this.pageSize, types: 1, search});
             this.visitorData = data.datas;
             for (const item of this.visitorData) {
                 item.adress = item.adress.province + "-" + item.adress.city + "-" + item.adress.community;
@@ -58,7 +62,9 @@ export default {
             this.visitorColumns = visitorColums(this, this.visitorData);
         },
         getSearchData(data) {
-            alert(1);
+            this.currentPage = 1;
+            this.searchData = data;
+            this.getData(data);
         },
         handleActive(index) {
             
@@ -93,6 +99,13 @@ export default {
         },
         getVisitorLog(index) {
             this.$router.push({path: '/visitor/self/'+this.visitorData[index].id})
+        },
+        changePage(page) {
+            this.currentPage = page;
+            this.getData(this.searchData);
+        },
+        pageSizeChange(size) {
+            this.pageSize = size;
         }
     },
     created () {

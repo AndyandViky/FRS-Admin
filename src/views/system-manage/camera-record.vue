@@ -9,7 +9,7 @@
             <Card>
                 <search @searchCondition="getSearchData"></search>
                 <Row>
-                    <Col span="18">
+                    <Col span="18" style="min-height: 100px;">
                         <Table :data="tableData1" :columns="cameraRecordColums" stripe ref="tableExcel"></Table>
                     </Col>
                     <Col span="6" class="padding-left-20">
@@ -23,7 +23,7 @@
                         </div>
                     </Col>
                     <Col span='6' class="padding-left-10">
-                         <div class="margin-top-10 margin-left-10">
+                        <div class="margin-top-10 margin-left-10">
                             <span>输入文件名：</span>
                             <Input v-model="excelFileName" icon="document" placeholder="请输入文件名" style="width: 190px" />
                         </div>
@@ -33,6 +33,7 @@
                         </div>
                     </Col>
                 </Row>
+                <center class="margin-top-10"><Page :total="total" @on-page-size-change="pageSizeChange" show-sizer @on-change="changePage"></Page></center>
             </Card>
         </Row>
     </div>
@@ -43,7 +44,7 @@ import html2canvas from 'html2canvas';
 import table2excel from '@/libs/table2excel.js';
 import { cameraRecordColums } from '@/util/table-columns.js'
 import search from '../main-components/search.vue'
-import { Camera } from '@/api'
+import { User } from '@/api'
 import { imageUrl } from '@/util/env'
 export default {
     name: 'table-to-image',
@@ -57,6 +58,9 @@ export default {
             excelFileName: '',
             tableExcel: {},
             cameraRecordColums: [],
+            total: 0,
+            currentPage: 1,
+            pageSize: 10,
         };
     },
     created() {
@@ -66,11 +70,12 @@ export default {
     methods: {
         async getData () {
             const data = {
-                pageNo: 1,
-                pageSize: 10,
+                pageNo: this.currentPage,
+                pageSize: this.pageSize,
                 userId: 0,
             }
-            const result = await  Camera.getNotRgisterRecord(data);
+            const result = await User.getNotRgisterRecord(data);
+            this.total = result.total;
             this.tableData1 = result.datas.map(item => {
                 item.name = "幸福花园小区";
                 item.types = item.people.types;
@@ -115,6 +120,13 @@ export default {
         },
         getSearchData() {
             alert(1);
+        },
+        changePage(page) {
+            this.currentPage = page;
+            this.getData();
+        },
+        pageSizeChange(size) {
+            this.pageSize = size;
         }
     }
 };

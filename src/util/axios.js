@@ -4,7 +4,7 @@ import {
 import axios from 'axios';
 import { getToken } from '@/util/auth';
 import store from '@/store';
-import { Message } from 'iview';
+import { Message, Spin } from 'iview';
 
 // axios 配置
 axios.defaults.timeout = 5000;
@@ -13,6 +13,20 @@ axios.defaults.baseURL = baseUrl;
 
 // POST传参序列化
 axios.interceptors.request.use((config) => {
+    Spin.show({
+        render: (h) => {
+            return h('div', [
+                h('Icon', {
+                    'class': 'demo-spin-icon-load',
+                    props: {
+                        type: 'load-c',
+                        size: 18
+                    }
+                }),
+                h('div', '加载中...')
+            ]);
+        }
+    });
     config.headers['Content-Type'] = 'application/json';
     // if (store.getters.token) {
     //     config.headers['authorization'] = 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZWxmSWQiOjIsImlhdCI6MTUyMzMzOTQwNywiZXhwIjoxNTI0MjAzNDA3fQ.tWUoC3fCuDXOExtmdnInYd44kR-Qvjvwe9Zu8LuzkPo'; // 让每个请求携带token--['X-Token']为自定义key 请根据实际情况自行修改
@@ -20,18 +34,27 @@ axios.interceptors.request.use((config) => {
     config.headers['authorization'] = 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZWxmSWQiOjU5NSwidHlwZSI6MiwiaWF0IjoxNTI0MjM4MTcwLCJleHAiOjE1MjUxMDIxNzB9.MmdrSIRtdXgVL3SzJ-w3U-Jg2UWMtU4OBOQkVlmwQOQ'; // 让每个请求携带token--['X-Token']为自定义key 请根据实际情况自行修改
     return config;
 }, (error) => {
+    setTimeout(() => {
+        Spin.hide();
+    }, 1000);
     Message.error({content: '网络错误'});
     return Promise.reject(error);
 });
 
 // 返回状态判断
 axios.interceptors.response.use((res) => {
+    setTimeout(() => {
+        Spin.hide();
+    }, 1000);
     if (res.data.code !== 1) {
         Message.error({content: res.data.msg});
         return Promise.reject(res);
     }
     return res;
 }, (error) => {
+    setTimeout(() => {
+        Spin.hide();
+    }, 1000);
     Message.error({content: '网络错误'});
     return Promise.reject(error);
 });

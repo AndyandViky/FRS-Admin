@@ -4,11 +4,11 @@
 
 <template>
     <Row class="search">
-        <Col span="4">
+        <!-- <Col span="4">
             <Cascader :data="adress" v-model="searchCondition.adress"></Cascader>
-        </Col>
-        <DatePicker type="daterange" split-panels v-model="dateFilter" placeholder="请选择时间..." style="width: 200px"></DatePicker>
-        <Input v-model="searchCondition.searchConName" placeholder="请输入关键字搜搜..." style="width: 200px" />
+        </Col> -->
+        <DatePicker type="daterange" split-panels v-model="searchCondition.dateFilter" placeholder="请选择时间..." style="width: 200px"></DatePicker>
+        <Input v-model="searchCondition.searchName" placeholder="请输入关键字搜搜..." style="width: 200px" />
         <span @click="handleSearch" style="margin: 0 10px;"><Button type="primary" icon="search">搜索</Button></span>
     </Row>
 </template>
@@ -19,7 +19,6 @@ export default {
     data () {
         return {
             isSuperManage: false,
-            dateFilter: '',
             provinceIndex: -1,
             cityIndex: -1,
             conmunityIndex: -1,
@@ -73,10 +72,9 @@ export default {
                 }
             ],
             searchCondition: {
-                searchConName: '',
-                begin: '',
-                end: '',
-                adress: [],
+                searchName: '',
+                dateFilter: [],
+                // adress: [],
             },
         };
     },
@@ -89,6 +87,9 @@ export default {
     methods: {
         handleSearch() {
             // ... 将时间字符串转换
+            if (this.searchCondition.searchName === '' && this.searchCondition.dateFilter.length < 2) {
+                return this.$Message.warning('请输入搜索信息');
+            }
             this.$emit("searchCondition", this.searchCondition)
         }
     },

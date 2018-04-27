@@ -21,6 +21,7 @@
                             </div>  
                         </Card>
                     </Col>
+                    <center class="margin-top-10"><Page :total="total" @on-page-size-change="pageSizeChange" show-sizer @on-change="changePage"></Page></center>
                 </Row>
             </Card>
         </Row>
@@ -46,12 +47,16 @@ export default {
             householdColumns: [],
             householdData: [],
             total: 0,
+            currentPage: 1,
+            pageSize: 10,
+            searchData: {},
         };
     },
     methods: {
-        async getData () {
-            const result = await User.getUsers({pageNo: 1, pageSize: 10, types: 2});
+        async getData (search) {
+            const result = await User.getUsers({pageNo: this.currentPage, pageSize: this.pageSize, types: 2, search});
             this.householdData = result.datas;
+            this.total = result.total;
             for(const item of this.householdData) {
                 item.adress = item.adress.province + "-" + item.adress.city + "-" + item.adress.community;
                 item.is_verify = item.user.is_verify;
@@ -62,7 +67,9 @@ export default {
             this.householdColumns = householdColums(this, this.householdData);
         },
         getSearchData(data) {
-            alert(1);
+            this.currentPage = 1;
+            this.searchData = data;
+            this.getData(data);
         },
         handleActive(index) {
             const id = this.householdData[index].id;   
@@ -112,6 +119,13 @@ export default {
         },
         getVisitorLog(index) {
             this.$router.push({path: '/visitor/household/'+this.householdData[index].id})
+        },
+        changePage(page) {
+            this.currentPage = page;
+            this.getData(this.searchData);
+        },
+        pageSizeChange(size) {
+            this.pageSize = size;
         }
     },
     created () {

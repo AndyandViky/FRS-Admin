@@ -21,6 +21,7 @@
                         </Card>
                     </Col>
                 </Row>
+                <center class="margin-top-10"><Page :total="total" @on-page-size-change="pageSizeChange" show-sizer @on-change="changePage"></Page></center>
             </Card>
         </Row>
     </div>
@@ -40,13 +41,17 @@ export default {
             bugColumns: [],
             bugData: [],
             modal: false,
+            total: 0,
+            currentPage: 1,
+            pageSize: 10,
+            searchData: {},
         };
     },
     methods: {
-        async getData () {
-            const result = await Bug.getBugs({pageNo: 1, pageSize: 10});
-            console.log(result);
+        async getData (search) {
+            const result = await Bug.getBugs({pageNo: this.currentPage, pageSize: this.pageSize, search});
             this.bugData = result.datas;
+            this.total = result.total;
             for(const item of this.bugData) {
                 item.area = "幸福花园小区";
                 item.belong = "15-622";
@@ -54,7 +59,9 @@ export default {
             this.bugColumns = bugColums(this, this.bugData);
         },
         getSearchData(data) {
-            alert(1);
+            this.currentPage = 1;
+            this.searchData = data;
+            this.getData(data);
         },
         handle (val, index) {
             if (!this.bugData[index].result) {
@@ -70,6 +77,13 @@ export default {
                 })
             }
         },
+        changePage(page) {
+            this.currentPage = page;
+            this.getData(this.searchData);
+        },
+        pageSizeChange(size) {
+            this.pageSize = size;
+        }
     },
     created () {
         this.getData();

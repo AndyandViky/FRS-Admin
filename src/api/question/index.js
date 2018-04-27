@@ -9,5 +9,11 @@ export const getQuestion = (data) => request('/question', data, 'get');
 // 修改问题内容
 export const changeQuestion = (data) => request('/question', data, 'put');
 
+// 修改答案内容
+export const changeAnswer = (data) => request('/answer', data, 'put');
+
 // 删除问题内容
 export const deleteQuestion = (data) => request('/question', data, 'delete');
+
+// 删除回答内容
+export const deleteAnswer = (data) => request('/answer', data, 'delete');

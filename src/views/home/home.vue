@@ -67,11 +67,11 @@
                 </Row>
             </Col>
             <Col :md="24" :lg="16">
-                <Row :gutter="5">
+                <Row :gutter="5" v-if="count.peopleCount >= 0">
                     <Col :xs="24" :sm="12" :md="6" :style="{marginBottom: '10px'}">
                         <infor-card
                             id-name="user_created_count"
-                            :end-val="count.createUser"
+                            :end-val="count.peopleCount"
                             iconType="android-person-add"
                             color="#2d8cf0"
                             intro-text="今日新增用户"
@@ -80,7 +80,7 @@
                     <Col :xs="24" :sm="12" :md="6" :style="{marginBottom: '10px'}">
                         <infor-card
                             id-name="visit_count"
-                            :end-val="count.visit"
+                            :end-val="count.browser"
                             iconType="ios-eye"
                             color="#64d572"
                             :iconSize="50"
@@ -90,7 +90,7 @@
                     <Col :xs="24" :sm="12" :md="6" :style="{marginBottom: '10px'}">
                         <infor-card
                             id-name="collection_count"
-                            :end-val="count.collection"
+                            :end-val="count.dataCatch"
                             iconType="upload"
                             color="#ffd572"
                             intro-text="今日数据采集量"
@@ -99,7 +99,7 @@
                     <Col :xs="24" :sm="12" :md="6" :style="{marginBottom: '10px'}">
                         <infor-card
                             id-name="transfer_count"
-                            :end-val="count.transfer"
+                            :end-val="count.server"
                             iconType="shuffle"
                             color="#f25e43"
                             intro-text="今日服务调用量"
@@ -126,7 +126,7 @@
                 </Row>
             </Col>
         </Row>
-        <Row :gutter="10" class="margin-top-10">
+        <Row :gutter="10" class="margin-top-10" v-if="count.appRecordToday >= 0">
             <Col :md="24" :lg="8" :style="{marginBottom: '10px'}">
                 <Card>
                     <p slot="title" class="card-title">
@@ -134,7 +134,7 @@
                         今日开门统计
                     </p>
                     <div class="data-source-row">
-                        <data-source-pie :id="'tody_open'" :data="[30000, 40000]"></data-source-pie>
+                        <data-source-pie :id="'tody_open'" :data="[count.appRecordToday, count.cameraRecordToday]"></data-source-pie>
                     </div>
                 </Card>
             </Col>
@@ -145,7 +145,7 @@
                         本周开门统计
                     </p>
                     <div class="data-source-row">
-                        <data-source-pie :id="'week_open'" :data="[40000, 100000]"></data-source-pie>
+                        <data-source-pie :id="'week_open'" :data="[count.appRecordWeek, count.cameraRecordWeek]"></data-source-pie>
                     </div>
                 </Card>
             </Col>
@@ -156,7 +156,7 @@
                         本月开门统计
                     </p>
                     <div class="data-source-row">
-                        <data-source-pie :id="'month_open'" :data="[200000, 670000]"></data-source-pie>
+                        <data-source-pie :id="'month_open'" :data="[count.appRecordMonth, count.cameraRecordMonth]"></data-source-pie>
                     </div>
                 </Card>
             </Col>
@@ -167,8 +167,8 @@
                     <Icon type="ios-shuffle-strong"></Icon>
                     上周每日开门方式曲线图
                 </p>
-                <div class="line-chart-con" style="height: 300px">
-                    <open-door-data></open-door-data>
+                <div class="line-chart-con" style="height: 300px" v-if="count.appLastWeeks">
+                    <open-door-data :dataApp="count.appLastWeeks" :dataCamera="count.cameraLastWeeks"></open-door-data>
                 </div>
             </Card>
         </Row>
@@ -183,6 +183,7 @@ import inforCard from './components/inforCard.vue';
 import mapDataTable from './components/mapDataTable.vue';
 import toDoListItem from './components/toDoListItem.vue';
 import openDoorData from './components/openDoorData.vue';
+import { User } from '@/api';
 export default {
     name: 'home',
     components: {
@@ -209,16 +210,14 @@ export default {
                     title: '系统安全测试'
                 }
             ],
-            count: {
-                createUser: 10,
-                visit: 20,
-                collection: 2438930,
-                transfer: 3950349
-            },
+            count: {},
             cityData: cityData,
             showAddNewTodo: false,
             newToDoItemValue: ''
         };
+    },
+    async created() {
+        this.count = await User.getIndexData();
     },
     computed: {
         avatorPath () {

@@ -43,8 +43,6 @@ export default {
     data () {
         return {
             bug: {
-                title: '小区门禁开不了',
-                content: '多次走到小区门, 门自动打开失败!',
             },
             formItem: {
                 bugId: '',
@@ -65,7 +63,8 @@ export default {
     async created() {
         const id = this.$route.params.id;
         this.formItem.bugId = id;
-        this.bug = await Bug.getBug({id})
+        this.bug = await Bug.getBug({bugId: id})
+        console.log(this.bug);
     }
 };
 </script>

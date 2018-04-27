@@ -29,7 +29,6 @@
                     </Form>
                 </Modal>
                 <Button type="primary" class="addButton" @click="addItem">增加</Button>
-                <search @searchCondition="getSearchData"></search>
                 <Row>
                     <Col span="100">
                         <Card>
@@ -51,13 +50,9 @@
 
 <script>
 import { cameraColums } from '@/util/table-columns.js'
-import search from '../main-components/search.vue'
 import {User} from '@/api'
 export default {
     name: 'camera-manage',
-    components: {
-        search
-    },
     data () {
         return {
             modal: false,
@@ -123,9 +118,6 @@ export default {
             setTimeout(() => {
                 this.cameraLoading = false;
             }, 2000)
-        },
-        getSearchData() {
-            alert(1);
         },
         addItem() {
             this.modal = true;

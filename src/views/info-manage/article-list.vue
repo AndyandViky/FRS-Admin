@@ -22,6 +22,7 @@
                             </a>
                         </div>
                     </Card>
+                    <center class="margin-top-10 margin-bottom-10"><Page :total="total" @on-page-size-change="pageSizeChange" show-sizer @on-change="changePage"></Page></center>
                 </div>
             </Col>
             <Col span="6" class="padding-left-10">
@@ -66,17 +67,30 @@ export default {
     data () {
         return {
             articleData: [
-            ]
+            ],
+            total: 0,
+            currentPage: 1,
+            pageSize: 10,
         };
     },
     async mounted () {
         // getData
-        const data = await Article.getArticles({pageNo: 1, pageSize: 10});
+        const data = await Article.getArticles({pageNo: this.currentPage, pageSize: this.pageSize});
         this.articleData = data.datas;
+        this.total = data.total;
         for (const item of this.articleData) {
             item.category = item.category.split(',');
             item.tag = item.tag.split(',');
             item.created_at = item.created_at.substring(0, 10);
+        }
+    },
+    methods: {
+        changePage(page) {
+            this.currentPage = page;
+            this.getData();
+        },
+        pageSizeChange(size) {
+            this.pageSize = size;
         }
     }
 }

@@ -1058,7 +1058,7 @@ const answerColums = function (self, tableData) {
                         },
                         on: {
                             click: () => {
-                                self.remove(tableData, params.index);
+                                self.removeAnswer(params.index);
                             }
                         }
                     }, '删除')
