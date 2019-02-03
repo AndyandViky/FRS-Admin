@@ -31,7 +31,7 @@ axios.interceptors.request.use((config) => {
     // if (store.getters.token) {
     //     config.headers['authorization'] = 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZWxmSWQiOjIsImlhdCI6MTUyMzMzOTQwNywiZXhwIjoxNTI0MjAzNDA3fQ.tWUoC3fCuDXOExtmdnInYd44kR-Qvjvwe9Zu8LuzkPo'; // 让每个请求携带token--['X-Token']为自定义key 请根据实际情况自行修改
     // }
-    config.headers['authorization'] = 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZWxmSWQiOjU5NSwidHlwZSI6MiwiaWF0IjoxNTI0MjM4MTcwLCJleHAiOjE1MjUxMDIxNzB9.MmdrSIRtdXgVL3SzJ-w3U-Jg2UWMtU4OBOQkVlmwQOQ'; // 让每个请求携带token--['X-Token']为自定义key 请根据实际情况自行修改
+    config.headers['authorization'] = 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZWxmSWQiOjIsInR5cGUiOjIsImlhdCI6MTU0OTE3OTYyNCwiZXhwIjoxNTUwMDQzNjI0fQ.4B5xpcynH7ANtlu_OWzsgXFOrHNG0FZbXuU5VZQTSKc'; // 让每个请求携带token--['X-Token']为自定义key 请根据实际情况自行修改
     return config;
 }, (error) => {
     setTimeout(() => {
