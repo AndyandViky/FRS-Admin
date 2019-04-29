@@ -22,7 +22,7 @@ export default {
         showMessage () {
             util.openNewPage(this, 'message_index');
             this.$router.push({
-                name: 'message_index'
+                path: 'info/notice'
             });
         }
     }

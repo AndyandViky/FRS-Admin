@@ -337,7 +337,7 @@ const baseColums = function (self, tableData) {
                 },
                 {
                     label: '未激活',
-                    value: 2
+                    value: 0
                 }
             ],
             filterMultiple: false,

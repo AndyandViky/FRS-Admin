@@ -55,6 +55,7 @@ export default {
         async getData (search) {
             const data = await User.getUsers({pageNo: this.currentPage, pageSize: this.pageSize, types: 1, search});
             this.visitorData = data.datas;
+            console.log(this.visitorData);
             for (const item of this.visitorData) {
                 item.adress = item.adress.province + "-" + item.adress.city + "-" + item.adress.community;
             }
