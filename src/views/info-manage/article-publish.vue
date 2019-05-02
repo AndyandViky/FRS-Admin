@@ -245,11 +245,10 @@ export default {
                 const data = {
                     title: this.articleTitle,
                     content: tinymce.activeEditor.getContent(),
-                    status: this.articleStatus,
+                    status: this.articleStatus === '正式文章' ? 1 : 0,
                     tag,
                     category,
                 }
-
                 Article.addArticle(data).then(result => {
                     setTimeout(() => {
                         this.publishLoading = false;
