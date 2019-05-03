@@ -33,7 +33,7 @@
                             热门文章
                         </p>
                         <div class="preview-placeholderCon">
-                            <div class="preview-placeholder" v-for='(item, index) in articleData' :key='index'>
+                            <div v-if='index < 5' class="preview-placeholder" v-for='(item, index) in articleData' :key='index'>
                                 <router-link :to='{path: "/article/"+item.id}' style="color: #666">
                                     {{item.title}}
                                 </router-link>
@@ -48,7 +48,7 @@
                             最新文章
                         </p>
                         <div class="preview-placeholderCon">
-                            <div class="preview-placeholder" v-for='(item, index) in articleData' :key='index'>
+                            <div v-if='index < 5' class="preview-placeholder" v-for='(item, index) in articleData' :key='index'>
                                 <router-link :to='{path: "/article/"+item.id}' style="color: #666">
                                     {{item.title}}
                                 </router-link>
@@ -75,14 +75,7 @@ export default {
     },
     async mounted () {
         // getData
-        const data = await Article.getArticles({pageNo: this.currentPage, pageSize: this.pageSize});
-        this.articleData = data.datas;
-        this.total = data.total;
-        for (const item of this.articleData) {
-            item.category = item.category.split(',');
-            item.tag = item.tag.split(',');
-            item.created_at = item.created_at.substring(0, 10);
-        }
+        this.getData();
     },
     methods: {
         changePage(page) {
@@ -91,6 +84,17 @@ export default {
         },
         pageSizeChange(size) {
             this.pageSize = size;
+        },
+        async getData() {
+            const data = await Article.getArticles({pageNo: this.currentPage, pageSize: this.pageSize});
+            this.articleData = [];
+            this.articleData = data.datas;
+            this.total = data.total;
+            for (const item of this.articleData) {
+                item.category = item.category.split(',');
+                item.tag = item.tag.split(',');
+                item.created_at = item.created_at.substring(0, 10);
+            }
         }
     }
 }

@@ -1,3 +1,4 @@
+
 <style lang="less">
     @import '../../styles/common.less';
     @import './article-list.less';
@@ -71,7 +72,9 @@ export default {
             this.title = data.title;
             this.content = data.content;
         }
-        tinymce.activeEditor.setContent(this.content);
+        setTimeout(() => {
+            tinymce.activeEditor.setContent(this.content);
+        }, 1000)
     },
     methods: {
         changeArticleInfo() {
