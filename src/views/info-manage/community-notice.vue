@@ -6,6 +6,9 @@
     <div class="message-main-con">
         <div class="message-mainlist-con">
             <div>
+                <Button @click="setCurrentMesType('unread')" size="large" long type="text"><transition name="mes-current-type-btn"><Icon v-show="currentMessageType === 'unread'" type="checkmark"></Icon></transition><span class="mes-type-btn-text">未读</span><Badge class="message-count-badge-outer" class-name="message-count-badge" :count="unreadCount"></Badge></Button>
+            </div>
+            <div>
                 <Button @click="setCurrentMesType('hassend')" size="large" long type="text"><transition name="mes-current-type-btn"><Icon v-show="currentMessageType === 'hassend'" type="checkmark"></Icon></transition><span class="mes-type-btn-text">已发送</span><Badge class="message-count-badge-outer" class-name="message-count-badge" :count="hassendCount"></Badge></Button>
             </div>
             <div>
@@ -109,11 +112,13 @@ export default {
             currentMesList: [],
             hassendMesList: [],
             recyclebinList: [],
+            unreadMesList: [],
             currentMessageType: 'hassend',
             showMesTitleList: true,
             showCreate: false,
             hassendCount: 0,
             recyclebinCount: 0,
+            unreadCount: 0,
             noDataText: '暂无通知',
             mes: {
                 title: '',
@@ -134,8 +139,10 @@ export default {
                     render: (h, params) => {
                         return h('a', {
                             on: {
-                                click: () => {
+                                click: async () => {
                                     this.showMesTitleList = false;
+                                    await Notice.noticed({ noticeId: params.row.id });
+                                    this.unreadMesList.splice(params.index, 1)[0];
                                     this.mes.title = params.row.title;
                                     this.mes.time = params.row.created_at;
                                     this.getContent(params.index);
@@ -179,6 +186,10 @@ export default {
                             return h('div', [
                                 deleteMesBtn(h, params)
                             ]);
+                        } else if (this.currentMessageType === 'unread') {
+                            return h('div', [
+                                deleteMesBtn(h, params)
+                            ]);
                         } else {
                             return h('div', [
                                 restoreBtn(h, params)
@@ -204,6 +215,9 @@ export default {
                 this.currentMesList = this.hassendMesList;
             } else if (type === 'create') {
                 this.showCreate = true;
+            } else if (type === 'unread') {
+                this.noDataText = '暂无已未读消息';
+                this.currentMesList = this.unreadMesList;
             } else {
                 this.noDataText = '回收站无通知';
                 this.currentMesList = this.recyclebinList;
@@ -227,10 +241,14 @@ export default {
     },
     async mounted () {
         const data = await Notice.getNotices({pageNo: 1, pageSize: 100});
+        console.log(data.datas)
         for (const item of data.datas) {
             if (item.deletedAt) {
                 this.recyclebinList.push(item);
             } else {
+                if(item.status === 0) {
+                    this.unreadMesList.push(item);
+                }
                 this.hassendMesList.push(item);
             }
         }
@@ -244,6 +262,9 @@ export default {
         },
         recyclebinList (arr) {
             this.recyclebinCount = arr.length;
+        },
+        unreadMesList (arr) {
+            this.unreadCount = arr.length;
         }
     }
 };
