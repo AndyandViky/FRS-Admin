@@ -1,4 +1,5 @@
 import Cookies from 'js-cookie';
+import { removeToken } from '@/util/auth';
 
 const user = {
     state: {
@@ -9,6 +10,7 @@ const user = {
             Cookies.remove('user');
             Cookies.remove('password');
             Cookies.remove('access');
+            removeToken();
             // 恢复默认样式
             let themeLink = document.querySelector('link[name="theme"]');
             themeLink.setAttribute('href', '');

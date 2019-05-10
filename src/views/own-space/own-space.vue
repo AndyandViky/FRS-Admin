@@ -91,6 +91,7 @@
 </template>
 
 <script>
+import { User } from '@/api';
 export default {
     name: 'ownspace_index',
     data () {
@@ -234,18 +235,26 @@ export default {
         saveEditPass () {
             this.$refs['editPasswordForm'].validate((valid) => {
                 if (valid) {
-                    this.savePassLoading = true;
+                    User.updatePassword({
+                        oldPwd: this.editPasswordForm.oldPass,
+                        newPwd: this.editPasswordForm.newPass,
+                        confirmPwd: this.editPasswordForm.rePass,
+                    }).then(result => {
+                        this.savePassLoading = true;
+                    })
                     // you can write ajax request here
                 }
             });
         },
         async init () {
-            this.userForm.name = 'Lison';
-            this.userForm.cellphone = '17712345678';
-            this.initPhone = '17712345678';
-            this.userForm.gender = '女';
-            this.userForm.age = 20;
-            this.userForm.email = '1026530721@qq.com';
+            const userData = await User.getUser();
+            const user = userData.user;
+            this.userForm.name = user.name;
+            this.userForm.cellphone = user.phone;
+            this.initPhone = user.phone;
+            this.userForm.gender = user.gender === 0 ? '男' : '女';
+            this.userForm.age = user.age + '';
+            this.userForm.email = user.email;
         },
         cancelInputCodeBox () {
             this.inputCodeVisible = false;

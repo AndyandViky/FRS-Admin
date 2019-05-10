@@ -3,7 +3,6 @@ import {
 } from './env';
 import axios from 'axios';
 import { getToken } from '@/util/auth';
-import store from '@/store';
 import { Message, Spin } from 'iview';
 
 // axios 配置
@@ -28,10 +27,7 @@ axios.interceptors.request.use((config) => {
         }
     });
     config.headers['Content-Type'] = 'application/json';
-    // if (store.getters.token) {
-    //     config.headers['authorization'] = 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZWxmSWQiOjIsImlhdCI6MTUyMzMzOTQwNywiZXhwIjoxNTI0MjAzNDA3fQ.tWUoC3fCuDXOExtmdnInYd44kR-Qvjvwe9Zu8LuzkPo'; // 让每个请求携带token--['X-Token']为自定义key 请根据实际情况自行修改
-    // }
-    config.headers['authorization'] = 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZWxmSWQiOjU5NSwidHlwZSI6NCwiaWF0IjoxNTU2MjY3MTM1LCJleHAiOjE1NTcxMzExMzV9.WJGjKA-6h85IFEZW_ft67mBW4EqkK4lllpqdwmhep54'; // 让每个请求携带token--['X-Token']为自定义key 请根据实际情况自行修改
+    config.headers['authorization'] = 'Bearer ' + getToken(); // 让每个请求携带token--['X-Token']为自定义key 请根据实际情况自行修改
     return config;
 }, (error) => {
     setTimeout(() => {

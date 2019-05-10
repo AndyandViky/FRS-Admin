@@ -1,5 +1,8 @@
 import {request} from '@/util/axios.js';
 
+// 登录
+export const login = (data) => request('/login', data, 'post');
+
 // 获取首页数据
 export const getIndexData = (data) => request('/', data, 'get');
 
@@ -11,6 +14,9 @@ export const getUser = (data) => request('/user', data, 'get');
 
 // 修改用户信息
 export const changeUserInfo = (data) => request('/user', data, 'put');
+
+// 修改密码
+export const updatePassword = (data) => request('/password', data, 'put');
 
 // 删除用户
 export const deleteUser = (data) => request('/user', data, 'delete');
