@@ -63,19 +63,18 @@ export default {
             this.searchData = data;
             this.getData(data);
         },
-        handle (val, index) {
-            if (!this.bugData[index].result) {
-                this.$router.push({path: '/bug/operate/'+this.bugData[index].id})
-            } else {
-                this.$Modal.confirm({
-                    title: "删除数据",
-                    content: "是否删除此条数据?",
-                    onOk: () => {
-                        val.splice(index, 1);
-                        this.$Message.info("删除成功");
-                    }
-                })
-            }
+        handleDelete (val, index) {
+            this.$Modal.confirm({
+                title: "删除数据",
+                content: "是否删除此条数据?",
+                onOk: () => {
+                    val.splice(index, 1);
+                    this.$Message.info("删除成功");
+                }
+            })
+        },
+        handleChange(val, index) {
+            this.$router.push({path: '/bug/operate/'+this.bugData[index].id})
         },
         changePage(page) {
             this.currentPage = page;

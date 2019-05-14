@@ -1,6 +1,12 @@
 <style lang="less">
     @import '../../styles/common.less';
     @import '../../styles/table.less';
+    .bug_image {
+        width: 200px;
+        height: 200px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
 </style>
 
 <template>
@@ -21,6 +27,10 @@
                                 <FormItem label="故障内容:">
                                     <p>{{bug.content}}</p>
                                 </FormItem>
+                                <div class="ivu-form-item">
+                                    <label class="ivu-form-item-label" style="width: 80px;">故障图片:</label>
+                                    <img :src="bug.path" class="bug_image"/>
+                                </div>
                                 <FormItem label="处理内容">
                                     <Input v-model="formItem.result" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="故障回复"></Input>
                                 </FormItem>
@@ -37,7 +47,8 @@
 </template>
 
 <script>
-import { Bug } from '@/api' 
+import { Bug } from '@/api'
+import { imageUrl } from '@/util/env';
 export default {
     name: 'bug-detail',
     data () {
@@ -60,11 +71,12 @@ export default {
             this.$router.go(-1);
         }
     },
-    async created() {
+    async activated() {
         const id = this.$route.params.id;
         this.formItem.bugId = id;
-        this.bug = await Bug.getBug({bugId: id})
-        console.log(this.bug);
+        this.bug = await Bug.getBug({bugId: id});
+        this.formItem.result = this.bug.result;
+        if(this.bug.path) this.bug.path = imageUrl + this.bug.path.substring(6);
     }
 };
 </script>

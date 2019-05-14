@@ -890,26 +890,33 @@ const bugColums = function (self, tableData) {
         {
             title: '操作',
             key: 'action',
-            width: 150,
+            width: 200,
             align: 'center',
             render: (h, params) => {
-                const row = params.row;
-                const type = row.result ? 'error' : 'primary';
-                const text = row.result ? '删除' : '处理';
                 return h('div', [
                     h('Button', {
                         props: {
-                            type
+                            type: 'primary'
                         },
                         style: {
                             marginRight: '5px'
                         },
                         on: {
                             click: () => {
-                                self.handle(tableData, params.index);
+                                self.handleChange(tableData, params.index);
                             }
                         }
-                    }, text)
+                    }, '修改'),
+                    h('Button', {
+                        props: {
+                            type: 'error'
+                        },
+                        on: {
+                            click: () => {
+                                self.handleDelete(tableData, params.index);
+                            }
+                        }
+                    }, '删除')
                 ]);
             }
         }

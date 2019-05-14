@@ -87,7 +87,7 @@ export default {
         },
         exportImage () {
             let vm = this;
-            let table = this.$refs.table.$el;
+            let table = this.$refs.tableExcel.$el;
             /* 这部分代码用来解决生成的图片不清晰的问题 */
             let tableWidth = table.offsetWidth;
             let tableHeight = table.offsetHeight;
