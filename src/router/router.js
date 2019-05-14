@@ -63,7 +63,6 @@ export const otherRouter = {
         { path: 'bug/operate/:id', title: '故障详情', name: 'bug-detail', component: () => import('@/views/bug-manage/bug-detail.vue') },
         { path: 'home', title: {i18n: 'home'}, name: 'home_index', component: () => import('@/views/home/home.vue') },
         { path: 'ownspace', title: '个人中心', name: 'ownspace_index', component: () => import('@/views/own-space/own-space.vue') },
-        { path: 'message', title: '消息中心', name: 'message_index', component: () => import('@/views/message/message.vue') }
     ]
 };
 
@@ -157,18 +156,7 @@ export const appRouter = [
                 component: () => import('@/views/bug-manage/bug-operate.vue')
             }
         ]
-    },
-    {
-        path: '/access',
-        icon: 'key',
-        name: 'access',
-        title: '权限管理',
-        access: 2,
-        component: Main,
-        children: [
-            { path: 'index', title: '权限管理', access: 2, name: 'access_index', component: () => import('@/views/access/access.vue') }
-        ]
-    },
+    }
 ];
 
 // 所有上面定义的路由都要写在下面的routers里
