@@ -666,33 +666,31 @@ const visitorLogColums = function (self, tableData) {
         },
         {
             title: '状态',
-            key: 'deadline',
+            key: 'status',
             align: 'center',
             filters: [
+                {
+                    label: '未生效',
+                    value: 0
+                },
                 {
                     label: '已生效',
                     value: 1
                 },
                 {
-                    label: '未生效',
+                    label: '已过期',
                     value: 2
                 }
             ],
             filterMultiple: false,
             filterMethod (value, row) {
-                const isUse = parseInt(row.pass_time + row.deadline * 3600 * 24 * 1000);
-                if (value === 1) {
-                    return isUse > Date.now();
-                } else if (value === 2) {
-                    return isUse < Date.now();
-                }
+                return row.status === value;
             },
             render: (h, params) => {
                 const row = params.row;
-                const isUse = parseInt(row.pass_time + row.deadline * 3600 * 24 * 1000);
-                const color = isUse > Date.now() ? '#666' : 'red';
-                const text = isUse > Date.now() ? '生效' : '失效';
-                const title = isUse > Date.now() ? '' : '点击延期';
+                const color = row.status < 2 ? '#666' : 'red';
+                const text = row.status === 1 ? '生效' : row.status === 2 ? '已过期' : '失效';
+                const title = row.status !== 2 ? '' : '点击延期';
                 return h('span', {
                     domProps: {
                         title: title

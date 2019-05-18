@@ -34,6 +34,7 @@ import { visitorColums } from '@/util/table-columns.js'
 import search from '../main-components/search.vue'
 import { User } from '@/api'
 import addModal from '../main-components/add-modal.vue'
+import { imageUrl } from '@/util/env.js' 
 export default {
     name: 'property',
     components: {
@@ -57,6 +58,7 @@ export default {
             this.visitorData = data.datas;
             console.log(this.visitorData);
             for (const item of this.visitorData) {
+                if (item.avatar) item.avatar = imageUrl + "/" + item.avatar.substring(6);
                 item.adress = item.adress.province + "-" + item.adress.city + "-" + item.adress.community;
             }
             this.total = data.total;

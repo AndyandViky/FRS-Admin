@@ -34,7 +34,7 @@ import { householdColums } from '@/util/table-columns.js'
 import search from '../main-components/search.vue'
 import addModal from '../main-components/add-modal.vue'
 import { User } from '@/api'
-import { baseUrl } from '@/util/env.js' 
+import { imageUrl } from '@/util/env.js' 
 export default {
     name: 'property',
     components: {
@@ -57,12 +57,14 @@ export default {
             const result = await User.getUsers({pageNo: this.currentPage, pageSize: this.pageSize, types: 2, search});
             this.householdData = result.datas;
             this.total = result.total;
+            console.log(this.householdData);
             for(const item of this.householdData) {
                 item.adress = item.adress.province + "-" + item.adress.city + "-" + item.adress.community;
                 item.is_verify = item.user.is_verify;
-                if (item.user.identity_pic) item.identity_pic = baseUrl + "/" + item.user.identity_pic.substring(6);
-                if (item.user.card_front) item.card_front = baseUrl + "/" + item.user.card_front.substring(6);
-                if (item.user.card_opposite) item.card_opposite = baseUrl + "/" + item.user.card_opposite.substring(6);
+                if (item.avatar) item.avatar = imageUrl + "/" + item.avatar.substring(6);
+                if (item.user.identity_pic) item.identity_pic = imageUrl + "/" + item.user.identity_pic.substring(6);
+                if (item.user.card_front) item.card_front = imageUrl + "/" + item.user.card_front.substring(6);
+                if (item.user.card_opposite) item.card_opposite = imageUrl + "/" + item.user.card_opposite.substring(6);
             }
             this.householdColumns = householdColums(this, this.householdData);
         },

@@ -33,7 +33,8 @@ import canEditTable from './components/canEditTable.vue'
 import { propertyColums } from '@/util/table-columns.js'
 import search from '../main-components/search.vue'
 import addModal from '../main-components/add-modal.vue'
-import { User } from '@/api' 
+import { User } from '@/api'
+import { imageUrl } from '@/util/env.js'  
 export default {
     name: 'property',
     components: {
@@ -56,6 +57,7 @@ export default {
             const data = await User.getUsers({pageNo: this.currentPage, pageSize: this.pageSize, types: 3, search});
             this.propertyData = data.datas;
             for (const item of this.propertyData) {
+                if (item.avatar) item.avatar = imageUrl + "/" + item.avatar.substring(6);
                 item.adress = item.adress.province + "-" + item.adress.city + "-" + item.adress.community;
             }
             this.total = data.total;
