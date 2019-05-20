@@ -40,10 +40,8 @@
                 <div v-if="showCreate">
                     <Form :model="formItem" :label-width="60" style="margin: 30px 40px 0 10px;">
                         <FormItem label="户主">
-                            <Select v-model="formItem.houseId">
-                                <Option value="1">15-311</Option>
-                                <Option value="2">15-312</Option>
-                                <Option value="3">15-313</Option>
+                            <Select v-model="formItem.people_id">
+                                <Option value="594">15-622</Option>
                             </Select>
                         </FormItem>
                         <FormItem label="标题">
@@ -231,18 +229,21 @@ export default {
             if (this.formItem.title === '' || this.formItem.content === '') {
                 return this.$Message.warning("请输入通知信息");
             }
-            this.formItem.time = Date.now();
-            this.hassendMesList.push(this.formItem);
-            this.currentMesList = this.hassendMesList;
-            this.currentMessageType = 'hassend';
-            this.showCreate = false;
-            this.$Message.info("发送成功");
+            console.log(this.formItem);
+            Notice.createNotice(this.formItem).then(result => {
+                this.formItem.time = Date.now();
+                this.hassendMesList.push(this.formItem);
+                this.currentMesList = this.hassendMesList;
+                this.currentMessageType = 'hassend';
+                this.showCreate = false;
+                this.$Message.info("发送成功");
+            });
         },
     },
     async mounted () {
         const data = await Notice.getNotices({pageNo: 1, pageSize: 100});
-        console.log(data.datas)
         for (const item of data.datas) {
+            item.created_at = item.created_at.substring(0, 10) + ' ' + item.created_at.substring(11, 16);
             if (item.deletedAt) {
                 this.recyclebinList.push(item);
             } else {

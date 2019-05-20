@@ -26,21 +26,6 @@
                 </div>
             </Col>
             <Col span="6" class="padding-left-10">
-                <div>
-                    <Card>
-                        <p slot="title">
-                            <Icon type="paper-airplane"></Icon>
-                            热门文章
-                        </p>
-                        <div class="preview-placeholderCon">
-                            <div v-if='index < 5' class="preview-placeholder" v-for='(item, index) in articleData' :key='index'>
-                                <router-link :to='{path: "/article/"+item.id}' style="color: #666">
-                                    {{item.title}}
-                                </router-link>
-                            </div>
-                        </div>
-                    </Card>
-                </div>
                 <div class="margin-top-10">
                     <Card>
                         <p slot="title">
@@ -48,7 +33,7 @@
                             最新文章
                         </p>
                         <div class="preview-placeholderCon">
-                            <div v-if='index < 5' class="preview-placeholder" v-for='(item, index) in articleData' :key='index'>
+                            <div class="preview-placeholder" v-for='(item, index) in mostNewArticle' :key='index'>
                                 <router-link :to='{path: "/article/"+item.id}' style="color: #666">
                                     {{item.title}}
                                 </router-link>
@@ -67,6 +52,8 @@ export default {
     data () {
         return {
             articleData: [
+            ],
+            mostNewArticle: [
             ],
             total: 0,
             currentPage: 1,
@@ -95,6 +82,9 @@ export default {
                 item.tag = item.tag.split(',');
                 item.created_at = item.created_at.substring(0, 10);
             }
+            const pageLength = parseInt(data.total / this.pageSize);
+            const newData = await Article.getArticles({pageNo: pageLength-1, pageSize: 5});
+            this.mostNewArticle = newData.datas;
         }
     }
 }

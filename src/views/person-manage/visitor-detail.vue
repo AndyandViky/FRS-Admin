@@ -80,7 +80,7 @@ export default {
         },
         exportImage () {
             let vm = this;
-            let table = this.$refs.table.$el;
+            let table = this.$refs.tableExcel.$el;
             /* 这部分代码用来解决生成的图片不清晰的问题 */
             let tableWidth = table.offsetWidth;
             let tableHeight = table.offsetHeight;
@@ -122,8 +122,9 @@ export default {
                         deadline: this.extentionTime,
                         recordId: this.tableData[index].id
                     }).then(result => {
-                        val.pass_time = Date.now();
-                        val.deadline = parseInt(val.deadline+this.extentionTime);
+                        if(val.status === 2) {
+                            val.status = 1;
+                        }
                         this.$Message.info('延期成功');
                     });
                 },  

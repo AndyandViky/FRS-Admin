@@ -8,3 +8,6 @@ export const getNotice = (data) => request('/notice', data, 'get');
 
 // 更改通知状态
 export const noticed = (data) => request('/notice', data, 'put');
+
+// 创建通知
+export const createNotice = (data) => request('/notice', data, 'post');

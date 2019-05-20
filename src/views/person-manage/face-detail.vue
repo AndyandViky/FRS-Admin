@@ -93,9 +93,11 @@ export default {
                 title: '删除数据',
                 content: '<p>是否删除此条数据?</p>',
                 onOk: () => {
-                    this.deleteCheckBox(this.imageData[index].id)
-                    this.imageData.splice(index, 1);
-                    this.$Message.info('删除成功');
+                    User.deleteFaceModel({ modelId: this.imageData[index].id }).then(result => {
+                        this.deleteCheckBox(this.imageData[index].id)
+                        this.imageData.splice(index, 1);
+                        this.$Message.info('删除成功');
+                    });
                 }
             });
         },

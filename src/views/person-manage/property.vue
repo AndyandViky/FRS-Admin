@@ -61,6 +61,7 @@ export default {
                 item.adress = item.adress.province + "-" + item.adress.city + "-" + item.adress.community;
             }
             this.total = data.total;
+            console.log(this.propertyData);
             this.propertyColumns = propertyColums(this, this.propertyData);
         },
         getSearchData(data) {

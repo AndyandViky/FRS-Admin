@@ -24,6 +24,8 @@ export const deleteUser = (data) => request('/user', data, 'delete');
 // 获取人脸模型
 export const getFace = (data) => request('/face', data, 'get');
 
+export const deleteFaceModel = (data) => request('/face', data, 'delete');
+
 // 激活人脸模型
 export const activeModel = (data) => request('/face/active', data, 'put');
 

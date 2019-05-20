@@ -1,3 +1,5 @@
+import { getToken } from '@/util/auth';
+import { imageUrl } from '@/util/env';
 const cameraRecordColums = function (tableData) {
     return [
         {
@@ -392,6 +394,7 @@ const baseColums = function (self, tableData) {
             key: 'avatar',
             width: 200,
             render: (h, params) => {
+                const row = params.row;
                 return h('Poptip', {
                     props: {
                         trigger: 'click',
@@ -401,7 +404,7 @@ const baseColums = function (self, tableData) {
                 }, [
                     h('img', {
                         domProps: {
-                            src: tableData[params.index].avatar,
+                            src: row.avatar,
                             title: '点击更换头像'
                         },
                         style: {
@@ -421,10 +424,16 @@ const baseColums = function (self, tableData) {
                     }, [
                         h('Upload', {
                             props: {
-                                action: '//jsonplaceholder.typicode.com/posts/',
+                                action: 'http://localhost:8000/avatar?peopleId=' + row.id,
+                                headers: {
+                                    'authorization': 'Bearer ' + getToken()
+                                },
                                 'format': ['jpg', 'png', 'jpeg', 'gif', 'bmp', 'svg'],
                                 'on-format-error': () => {
                                     self.$Message.warning('文件格式错误');
+                                },
+                                'on-success': (response, file) => {
+                                    row.avatar = imageUrl + '/' + response.data.substring(6);
                                 }
                             }
                         }, [
@@ -689,8 +698,8 @@ const visitorLogColums = function (self, tableData) {
             render: (h, params) => {
                 const row = params.row;
                 const color = row.status < 2 ? '#666' : 'red';
-                const text = row.status === 1 ? '生效' : row.status === 2 ? '已过期' : '失效';
-                const title = row.status !== 2 ? '' : '点击延期';
+                const text = row.status === 1 ? '已生效' : row.status === 2 ? '已过期' : '未生效';
+                const title = '点击延期';
                 return h('span', {
                     domProps: {
                         title: title

@@ -18,7 +18,7 @@
                                 <Col span="16" style="padding-left:6px;">
                                     <Row class-name="made-child-con-middle" type="flex" align="middle">
                                         <div>
-                                            <b class="card-user-infor-name">Admin</b>
+                                            <b class="card-user-infor-name">Andy</b>
                                             <p>super admin</p>
                                         </div>
                                     </Row>
@@ -27,7 +27,7 @@
                             <div class="line-gray"></div>
                             <Row class="margin-top-8">
                                 <Col span="8"><p class="notwrap">上次登录时间:</p></Col>
-                                <Col span="16" class="padding-left-8">2018.04.12-13:32:20</Col>
+                                <Col span="16" class="padding-left-8">2019.05.22-13:32:20</Col>
                             </Row>
                             <Row class="margin-top-8">
                                 <Col span="8"><p class="notwrap">上次登录地点:</p></Col>
@@ -165,7 +165,7 @@
             <Card>
                 <p slot="title" class="card-title">
                     <Icon type="ios-shuffle-strong"></Icon>
-                    上周每日开门方式曲线图
+                    本周每日开门方式曲线图
                 </p>
                 <div class="line-chart-con" style="height: 300px" v-if="count.appLastWeeks">
                     <open-door-data :dataApp="count.appLastWeeks" :dataCamera="count.cameraLastWeeks"></open-door-data>
@@ -201,9 +201,6 @@ export default {
                     title: '将摄像头记录导出未表格文件'
                 },
                 {
-                    title: '增加一批摄像头'
-                },
-                {
                     title: '处理当天的故障申请'
                 },
                 {
@@ -218,6 +215,7 @@ export default {
     },
     async created() {
         this.count = await User.getIndexData();
+        this.cityData[0].value = this.count.server;
     },
     computed: {
         avatorPath () {
