@@ -11,3 +11,6 @@ export const changeArticleInfo = (data) => request('/article', data, 'put');
 
 // 获取文章详情
 export const getArticle = (data) => request('/article', data, 'get');
+
+// 删除文章
+export const deleteArticle = (data) => request('/article', data, 'delete');

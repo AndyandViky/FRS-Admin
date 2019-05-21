@@ -7,6 +7,18 @@
     <div>
         <Row>
             <Card>
+                <Modal
+                    v-model="modal"
+                    title="增加问题"
+                    @on-ok="postForm"
+                    :scrollable="true">
+                    <Form :model="formItem" :label-width="80" :rules="inforValidate" ref="forms">
+                        <FormItem label="标题" prop="title">
+                            <Input v-model="formItem.title" placeholder="请输入标题..."></Input>
+                        </FormItem>
+                    </Form>
+                </Modal>
+                <Button type="primary" class="addButton" @click="addItem">增加</Button>
                 <search @searchCondition="getSearchData"></search>
                 <Row>
                     <Col span="100">
@@ -30,6 +42,15 @@ export default {
     },
     data () {
         return {
+            modal: false,
+            formItem: {
+                title: '',
+            },
+            inforValidate: {
+                title: [
+                    { required: true, message: '请输入标题', trigger: 'blur' }
+                ],
+            },
             tableData: [],
             questionColums: [],
             total: 0,
@@ -104,8 +125,21 @@ export default {
                 }
             })
         },
+        postForm() {
+            this.$refs['forms'].validate((valid) => {
+                if (valid) {
+                    Question.addQuestion(this.formItem).then(result => {
+                        this.$Message.info("添加成功");
+                        this.getData();
+                    })
+                } else this.$Message.warning("添加失败, 输入错误");
+            });
+        },
+        addItem() {
+            this.modal = true;
+        },
         remove(tableData, index) {
-            const questionId = this.$route.params.id;
+            const questionId = tableData[index].id;
             this.$Modal.confirm({
                 title: "删除数据",
                 content: "是否删除此条数据?",

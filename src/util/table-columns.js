@@ -633,6 +633,7 @@ const householdColums = function (self, tableData) {
                         click: () => {
                             if (row.is_verify === 0) {
                                 self.activeResident(params.index);
+                                row.is_verify = 1;
                             }
                         }
                     }

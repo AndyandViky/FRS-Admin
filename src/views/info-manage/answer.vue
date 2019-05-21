@@ -7,6 +7,18 @@
     <div>
         <Row>
             <Card>
+                <Modal
+                    v-model="modal"
+                    title="增加回答"
+                    @on-ok="postForm"
+                    :scrollable="true">
+                    <Form :model="formItem" :label-width="80" :rules="inforValidate" ref="forms">
+                        <FormItem label="内容" prop="content">
+                            <Input v-model="formItem.content" placeholder="请输入内容..."></Input>
+                        </FormItem>
+                    </Form>
+                </Modal>
+                <Button type="primary" class="addButton" @click="addItem">增加</Button>
                 <Row>
                     <Col span="100">
                         <Table :data="tableData" :columns="answerColums" stripe ref="table"></Table>
@@ -24,6 +36,16 @@ export default {
     name: 'answer',
     data () {
         return {
+            modal: false,
+            formItem: {
+                content: '',
+                question_id: this.$route.params.id,
+            },
+            inforValidate: {
+                content: [
+                    { required: true, message: '请输入内容', trigger: 'blur' }
+                ],
+            },
             tableData: [],
             answerColums: [],
         };
@@ -37,6 +59,7 @@ export default {
             const questionId = this.$route.params.id;
             const data = await Question.getQuestion({ questionId });
             this.tableData = data.answers;
+            console.log(this.tableData);
             for(const item of this.tableData) {
                 item.title = data.question.title;
             }
@@ -78,6 +101,19 @@ export default {
                     ])
                 }
             })
+        },
+        postForm() {
+            this.$refs['forms'].validate((valid) => {
+                if (valid) {
+                    Question.addAnswer(this.formItem).then(result => {
+                        this.$Message.info("添加成功");
+                        this.getData();
+                    })
+                } else this.$Message.warning("添加失败, 输入错误");
+            });
+        },
+        addItem() {
+            this.modal = true;
         },
         removeAnswer(index) {
             this.$Modal.confirm({

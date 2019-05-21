@@ -6,7 +6,7 @@
     <Row class="addModal">
         <Modal
             v-model="modal"
-            title="增加物业人员"
+            title="增加人员"
             @on-ok="postForm"
             :scrollable="true">
             <Form :model="formItem" :label-width="80" :rules="inforValidate" ref="forms">
@@ -49,55 +49,32 @@ export default {
                 callback();
             }
         };
+        const valideEmail = (rule, value, callback) => {
+            var re = /^([0-9A-Za-z\-_\.]+)@([0-9a-z]+\.[a-z]{2,3}(\.[a-z]{2})?)$/;
+            if (!re.test(value)) {
+                callback(new Error('请输入正确格式的邮箱'));
+            } else {
+                callback();
+            }
+        };
         return {
             modal: false,
             adress: [
                 {
-                    value: '北京',
-                    label: '北京',
+                    value: '浙江省',
+                    label: '浙江省',
                     children: [
                         {
-                            value: '幸福小区1',
-                            label: '幸福小区1'
+                            value: '绍兴市',
+                            label: '绍兴市',
+                            children: [
+                                {
+                                    value: '幸福花园小区',
+                                    label: '幸福花园小区',
+                                }
+                            ]
                         },
-                        {
-                            value: '幸福小区2',
-                            label: '幸福小区2'
-                        },
-                        {
-                            value: '幸福小区3',
-                            label: '幸福小区3'
-                        }
                     ]
-                }, {
-                    value: '江苏',
-                    label: '江苏',
-                    children: [
-                        {
-                            value: '南京',
-                            label: '南京',
-                            children: [
-                                {
-                                    value: '幸福小区4',
-                                    label: '幸福小区4',
-                                }
-                            ]
-                        },
-                        {
-                            value: '苏州',
-                            label: '苏州',
-                            children: [
-                                {
-                                    value: '幸福小区5',
-                                    label: '幸福小区5',
-                                },
-                                {
-                                    value: '幸福小区6',
-                                    label: '幸福小区6',
-                                }
-                            ]
-                        }
-                    ],
                 }
             ],
             formItem: {
@@ -125,7 +102,8 @@ export default {
                     { required: true, message: '请输入年龄', trigger: 'blur' }
                 ],
                 email: [
-                    { required: true, message: '请输入邮箱', trigger: 'blur' }
+                    { required: true, message: '请输入邮箱' },
+                    { validator: valideEmail }
                 ]
             },
         };

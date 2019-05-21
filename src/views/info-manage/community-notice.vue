@@ -41,7 +41,8 @@
                     <Form :model="formItem" :label-width="60" style="margin: 30px 40px 0 10px;">
                         <FormItem label="户主">
                             <Select v-model="formItem.people_id">
-                                <Option value="594">15-622</Option>
+                                <Option value="594">15-621</Option>
+                                <Option value="595">15-622</Option>
                             </Select>
                         </FormItem>
                         <FormItem label="标题">

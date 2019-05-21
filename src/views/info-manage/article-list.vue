@@ -1,6 +1,13 @@
 <style lang="less">
     @import '../../styles/common.less';
     @import './article-list.less';
+    .delete_article_btn {
+        position: absolute;
+        right: 20px;
+        top: 10px;
+        font-size: 30px;
+        cursor: pointer;
+    }
 </style>
 
 <template>
@@ -10,6 +17,7 @@
                 <div>
                     <Card v-for='(item, index) in articleData' :key='index'>
                         <router-link :to='{path: "/article/"+item.id}'><h1 style="color:#666">{{ item.title }}</h1></router-link>
+                        <Icon type="ivu-icon ivu-icon-ios-close-empty delete_article_btn" @click="deleteArticle(item.id, index)"></Icon>
                         <p class="preview-publish-time"><Icon type="android-alarm-clock"></Icon>&nbsp;发布时间：{{ item.created_at }}</p>
                         <div class="preview-tags-con">
                             <b class="preview-tip"><Icon type="ios-pricetags-outline"></Icon>&nbsp;标签：</b><Tag v-for="(tag, index) in item.tag" type="border" color="blue" :key="index">{{ tag }}</Tag>
@@ -85,6 +93,18 @@ export default {
             const pageLength = parseInt(data.total / this.pageSize);
             const newData = await Article.getArticles({pageNo: pageLength-1, pageSize: 5});
             this.mostNewArticle = newData.datas;
+        },
+        async deleteArticle(articleId, index) {
+            this.$Modal.confirm({
+                title: "删除数据",
+                content: "是否删除此条数据?",
+                onOk: () => {
+                    Article.deleteArticle({articleId}).then(async (result) => {
+                        this.articleData.splice(index, 1);
+                        this.$Message.info("删除成功");
+                    });
+                }
+            })
         }
     }
 }

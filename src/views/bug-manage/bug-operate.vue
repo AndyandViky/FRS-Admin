@@ -51,10 +51,12 @@ export default {
         async getData (search) {
             const result = await Bug.getBugs({pageNo: this.currentPage, pageSize: this.pageSize, search});
             this.bugData = result.datas;
+            console.log(this.bugData);
             this.total = result.total;
             for(const item of this.bugData) {
                 item.area = "幸福花园小区";
-                item.belong = "15-622";
+                if(item.people) item.belong = item.people.house_number;
+                else item.belong = "15-11";
             }
             this.bugColumns = bugColums(this, this.bugData);
         },

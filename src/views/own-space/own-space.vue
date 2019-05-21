@@ -54,11 +54,6 @@
                             <Input v-model="userForm.email" ></Input>
                         </div>
                     </FormItem>
-                    <FormItem label="头像：">
-                        <div style="display:inline-block;width:300px;">
-                            <Input v-model="userForm.email" ></Input>
-                        </div>
-                    </FormItem>
                     <FormItem label="登录密码：">
                         <Button type="text" size="small" @click="showEditPassword">修改密码</Button>
                     </FormItem>

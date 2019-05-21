@@ -17,3 +17,9 @@ export const deleteQuestion = (data) => request('/question', data, 'delete');
 
 // 删除回答内容
 export const deleteAnswer = (data) => request('/answer', data, 'delete');
+
+// 增加回答
+export const addQuestion = (data) => request('/question', data, 'post');
+
+// 增加答案
+export const addAnswer = (data) => request('/answer', data, 'post');

@@ -70,10 +70,13 @@ export default {
                 userId,
             });
             this.tableData = data.datas;
+            console.log(this.tableData);
             for(const item of this.tableData) {
-                item.name = item.people.name;
-                item.belong = '15-622';
-                item.adress = '幸福花园小区';
+                if(item.people) {
+                    item.name = item.people.name;
+                    item.belong = item.people.house_number;
+                    item.adress = '幸福花园小区';
+                }
             }
             this.total = data.total;
             this.visitorRecordColums = visitorLogColums(this, this.tableData)

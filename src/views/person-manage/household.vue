@@ -117,7 +117,7 @@ export default {
             this.$router.push({path: '/face/'+this.householdData[index].id})
         },
         getForm(data) {
-            this.propertyData.push(data);
+            this.householdData.push(data);
         },
         getVisitorLog(index) {
             this.$router.push({path: '/visitor/household/'+this.householdData[index].id})

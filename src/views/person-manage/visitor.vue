@@ -73,7 +73,7 @@ export default {
             
         },
         handleDel (val, index) {
-            const data = this.visitorData[index];
+            const data = val[index];
             User.deleteUser({
                 userId: data.id,
                 type: data.types
@@ -82,7 +82,7 @@ export default {
             })
         },
         handleChange (val, index) {
-            const data = this.visitorData[index];
+            const data = val[index];
             User.changeUserInfo({
                 email: data.email,
                 name: data.name,

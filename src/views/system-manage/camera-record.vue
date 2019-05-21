@@ -9,7 +9,7 @@
             <Card>
                 <search @searchCondition="getSearchData"></search>
                 <Row>
-                    <Col span="18" style="min-height: 100px;">
+                    <Col span="18" style="min-height: 300px;">
                         <Table :data="tableData1" :columns="cameraRecordColums" stripe ref="tableExcel"></Table>
                     </Col>
                     <Col span="6" class="padding-left-20">
